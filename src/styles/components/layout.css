@@ -5,7 +5,7 @@
   input[type=text] {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid rgb(243, 240, 240);
     border-radius: 4px;
     resize: vertical;
     font-size: 16px;
@@ -17,7 +17,7 @@
   }
   
   button {
-    background-color: #0f4102;
+    background-color: #5e606e;
     color: white;
     padding: 12px 20px;
     border: none;
@@ -27,12 +27,12 @@
   }
   
   input:hover {
-    background-color: #8ff194;
+    background-color: #b8d7f0;
   }
   
   .container {
     border-radius: 5px;
-    background-color: #85f5b0;
+    background-color: #bdece8;
     padding: 20px;
   }
   
