@@ -30,6 +30,14 @@ class LayoutSection extends React.Component{
               this.setState(() => ({ image: imageVal[1]}));
           }
       }
+
+      onChangeName(e) {
+        this.setState({ userName: e.target.value });
+      }
+
+      onChangeEmail(e) {
+        this.setState({ userEmail: e.target.value });
+      }
       
     calcLayoutSection(e){
       e.preventDefault();
@@ -79,7 +87,7 @@ class LayoutSection extends React.Component{
                                 <label>Name</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='name' placeholder='Enter your name'/>
+                                <input autoComplete='Off' type='text' name='name' placeholder='Enter your name' onChangeName={(e)=>this.onChangeName(e)}/>
                             </div>
                         </div>
 
@@ -88,7 +96,7 @@ class LayoutSection extends React.Component{
                                 <label>Email</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='email' placeholder='Enter your email'/>
+                                <input autoComplete='Off' type='text' name='email' placeholder='Enter your email' onChangeEmail={(e)=>this.onChangeEmail(e)}/>
                             </div>
                         </div>
 
@@ -102,7 +110,7 @@ class LayoutSection extends React.Component{
                         </div>
 
                         <div class="row">
-                            <button>Identify Objects</button>
+                            <button disabled={(!this.state.userName & !this.state.userEmail & !this.state.image)}>Identify Objects</button>
                         </div>          
 
                         {this.state.loading === 1 ? 
