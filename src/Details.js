@@ -15,7 +15,7 @@ class LayoutSection extends React.Component{
             objectsList:"",
             loading:0,
             error: undefined,
-            names: []
+            'names': []
         };
       }
 
@@ -70,6 +70,15 @@ class LayoutSection extends React.Component{
           } catch(e){
               console.log('Error in get labels :'+e);
           }
+          try{
+            const data = await axios.post(url, reqBody, {headers:reqHeader}).then(res => {
+                  this.setState(() => ({'names':res.data.body}));
+                  return res.data.body;
+            })
+            return data
+        } catch(e){
+            console.log('Error in get labels :'+e);
+        }
       }
       getLabels();
     }
@@ -122,13 +131,11 @@ class LayoutSection extends React.Component{
                         <div class="row">
                             <div class="col-75">
                                 {/* <label> {JSON.stringify(this.state.objectsList)}</label> */}
-                                this.state.names = {JSON.stringify(this.state.objectsList)}
-                                {/* <label>{this.state.names}</label> */}
                                 <ul>
                                     {this.state.names.map(function(name, index){
                                         return (
                                             <div key={index}>
-                                                <label>{name.Labels.Name}</label>
+                                                <label>{name.Labels}</label>
                                             </div>
                                         )
                                     })}
