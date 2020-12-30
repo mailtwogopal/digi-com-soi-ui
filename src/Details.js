@@ -14,7 +14,8 @@ class LayoutSection extends React.Component{
             objectCount:0,
             objectsList:"",
             loading:0,
-            error: undefined
+            error: undefined,
+            names: []
         };
       }
 
@@ -28,22 +29,22 @@ class LayoutSection extends React.Component{
             //console.log('Uploaded Image',e.target.result);
             let imageVal = e.target.result.split(',');
               this.setState(() => ({ image: imageVal[1]}));
-          }
+            }
       }
 
-      onChangeName(e) {
-        this.setState({ userName: e.target.value });
-      }
+        onChangeName(e) {
+            this.setState({ userName: e.target.value });
+        }
 
-      onChangeEmail(e) {
-        this.setState({ userEmail: e.target.value });
-      }
+        onChangeEmail(e) {
+            this.setState({ userEmail: e.target.value });
+        }
       
     calcLayoutSection(e){
       e.preventDefault();
-      const name = parseInt(e.target.elements.name.value.trim());
-      const email = parseInt(e.target.elements.email.value.trim());
-      this.setState(() => ({ userName: name, userEmail: email, loading:1}));
+      const name = (e.target.elements.name.value.trim());
+      const email = (e.target.elements.email.value.trim());
+      this.setState(() => ({ userName: name, userEmail: email, loading:1 }));
       console.log('Inside calcLayoutSection');
       let reqBody = {
           "name":this.state.userName,
@@ -70,7 +71,6 @@ class LayoutSection extends React.Component{
               console.log('Error in get labels :'+e);
           }
       }
-
       getLabels();
     }
     
@@ -110,9 +110,8 @@ class LayoutSection extends React.Component{
                         </div>
 
                         <div class="row">
-                            <button disabled={(!this.state.userName & !this.state.userEmail & !this.state.image)}>Identify Objects</button>
+                            <button disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}>Identify Objects</button>
                         </div>          
-
                         {this.state.loading === 1 ? 
                         <div>
                             <p> Fetching Details....</p>
@@ -121,15 +120,24 @@ class LayoutSection extends React.Component{
                         
                         {this.state.loading === 2 ? 
                         <div class="row">
-                        <div class="col-75">
-                            <label> {JSON.stringify(this.state.objectsList)}</label>
-                        </div>
-                        </div>: 
+                            <div class="col-75">
+                                {/* <label> {JSON.stringify(this.state.objectsList)}</label> */}
+                                this.state.names = {JSON.stringify(this.state.objectsList)}
+                                {/* <label>{this.state.names}</label> */}
+                                <ul>
+                                    {this.state.names.map(function(name, index){
+                                        return (
+                                            <div key={index}>
+                                                <label>{name.Labels.Name}</label>
+                                            </div>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
+                        </div>:
                         <p></p>}
-                        
                     </fieldset>
                 </form>
-
                 <div>
                     <ReactBootStrap.Spinner animation="border"/>
                 </div>
