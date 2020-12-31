@@ -15,7 +15,6 @@ class LayoutSection extends React.Component{
             objectsList:"",
             loading:0,
             error: undefined,
-            'names': []
         };
       }
 
@@ -70,15 +69,6 @@ class LayoutSection extends React.Component{
           } catch(e){
               console.log('Error in get labels :'+e);
           }
-          try{
-            const data = await axios.post(url, reqBody, {headers:reqHeader}).then(res => {
-                  this.setState(() => ({'names':res.data.body}));
-                  return res.data.body;
-            })
-            return data
-        } catch(e){
-            console.log('Error in get labels :'+e);
-        }
       }
       getLabels();
     }
@@ -90,7 +80,6 @@ class LayoutSection extends React.Component{
                 <form onSubmit={this.calcLayoutSection}>
                     <fieldset>
                         <legend>Details</legend>
-
                         <div class="row">
                             <div class="col-25">
                                 <label>Name</label>
@@ -131,15 +120,16 @@ class LayoutSection extends React.Component{
                         <div class="row">
                             <div class="col-75">
                                 {/* <label> {JSON.stringify(this.state.objectsList)}</label> */}
-                                <ul>
-                                    {this.state.names.map(function(name, index){
-                                        return (
-                                            <div key={index}>
-                                                <label>{name.Labels}</label>
-                                            </div>
-                                        )
-                                    })}
-                                </ul>
+                                    <div>
+                                        <ul>
+                                            <label>List of Names for the picture</label>
+                                            {this.state.objectsList.Labels.map(lst => (
+                                                <li>
+                                                    <label>{lst.Name}</label>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                             </div>
                         </div>:
                         <p></p>}
