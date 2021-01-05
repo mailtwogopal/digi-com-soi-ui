@@ -27,7 +27,6 @@ class LayoutSection extends React.Component {
             const data = await axios.post(this.url, reqBody, { headers: reqHeader }).then(res => {
                 return res.data.body;
             })
-            // console.log("returned data is " + JSON.stringify(data));
             return data
         } catch (e) {
             console.log('Error in get labels :' + e);
@@ -40,7 +39,6 @@ class LayoutSection extends React.Component {
         reader.readAsDataURL(files[0]);
 
         reader.onload = (e) => {
-            //console.log('Uploaded Image',e.target.result);
             let imageVal = e.target.result.split(',');
             this.setState(() => ({ image: imageVal[1] }));
         }
@@ -77,8 +75,6 @@ class LayoutSection extends React.Component {
             const apiResp = await this.callApi(reqBody, reqHeader);
             let emailbodyobj = {};
             emailbodyobj = apiResp;
-            this.emailbodyarr.push(this.state.userName);
-            this.emailbodyarr.push(this.state.userEmail);
             emailbodyobj.Labels.map(item => {
                 this.emailbodyarr.push(item.Name);
                 return this.emailbodyarr;
@@ -91,16 +87,12 @@ class LayoutSection extends React.Component {
 
     sendFormData(e) {
         e.preventDefault();
+        console.log("identified object :")
         console.log(this.emailbodyarr);
-        // let reqBody = {
-        //     "name":this.state.userName,
-        //     "email":this.state.userEmail,
-        //     "list":this.state.list
-        //   }
-
+        
         let reqBody = {
             'subject': 'Analysis of the picture',
-            "message": "Dear " +  JSON.stringify(this.state.userName) +  " this is the list of items insured. We will be sending our final analysis to your email address : " + JSON.stringify(this.state.userEmail) + " which you provided. Analysis results are as follows " + this.emailbodyarr
+            "message": "Dear " +  this.state.userName +  " this is the list of items insured. We will be sending our final analysis to your email address : " + this.state.userEmail + " which you provided. Analysis results are as follows " + this.emailbodyarr
         }
 
         let config = {
@@ -108,14 +100,12 @@ class LayoutSection extends React.Component {
                 'Content-Type': 'application/json',
             }
         }
+        
         let url = 'https://rk7zodptd5.execute-api.us-east-1.amazonaws.com/Prod?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
 
         const sendData = async () => {
             try {
                 const data = await axios.post(url, reqBody, config).then(res => {
-                    //const data = await axios.post(url, reqBody, {headers:reqHeader}).then(res => {
-                    //   console.log('sendData Response :'+ JSON.stringify(res.data.body))
-                    //   this.setState(() => ({objectsList:res.data.body, loading:3}));
                     return res.data.body;
                 })
                 return data
@@ -172,7 +162,6 @@ class LayoutSection extends React.Component {
                         {this.state.loading === 2 ?
                             <div class="row">
                                 <div class="col-75">
-                                    {/* <label> {JSON.stringify(this.state.objectsList)}</label> */}
                                     <div>
                                         <ol>
                                             <label>Objects identified for the uploaded picture:</label>
