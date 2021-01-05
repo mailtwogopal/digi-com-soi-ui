@@ -76,7 +76,7 @@ class LayoutSection extends React.Component {
             let emailbodyobj = {};
             emailbodyobj = apiResp;
             emailbodyobj.Labels.map(item => {
-                this.emailbodyarr.push(item.Name);
+                this.emailbodyarr.push(' ' + item.Name);
                 return this.emailbodyarr;
             })
             this.setState(() => ({ objectsList: apiResp, loading: 2 }));
@@ -92,7 +92,7 @@ class LayoutSection extends React.Component {
         
         let reqBody = {
             'subject': 'Analysis of the picture',
-            "message": "Dear " +  this.state.userName +  " this is the list of items insured. We will be sending our final analysis to your email address : " + this.state.userEmail + " which you provided. Analysis results are as follows " + this.emailbodyarr
+            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We will be sending our final analysis to your email address : ' + this.state.userEmail + ' which you provided. Analysis results are as follows : '+ this.emailbodyarr + '.'
         }
 
         let config = {
