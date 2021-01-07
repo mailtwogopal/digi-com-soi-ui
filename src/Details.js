@@ -20,6 +20,9 @@ class LayoutSection extends React.Component {
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
+        this.initialStateName = {userName: ""};
+        this.initialStateEmail = {userEmail: ""};
+        this.initialStateImage = {image: ""};
     }
 
     callApi = async (reqBody, reqHeader) => {
@@ -80,32 +83,31 @@ class LayoutSection extends React.Component {
                 return this.emailbodyarr;
             })
             this.setState(() => ({ objectsList: apiResp, loading: 2 }));
-
         }
         getLabels();
     }
 
     sendFormData(e) {
         e.preventDefault();
-        console.log("identified object :")
+        this.setState(() => this.initialStateName);
+        this.setState(() => this.initialStateEmail);
+        this.setState(() => this.initialStateImage);
+        console.log("identified objects that will be email to " + this.state.userEmail + "are :")
         console.log(this.emailbodyarr);
-        
         let reqBody = {
             'subject': 'Analysis of the picture',
-            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We will be sending our final analysis to your email address : ' + this.state.userEmail + ' which you provided. Analysis results are as follows : '+ this.emailbodyarr + '.'
+            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We glad to inform you that, our analysis is complete and objects are identified. The result is as follows : ' + this.emailbodyarr + '.'
         }
-
         let config = {
             headers: {
                 'Content-Type': 'application/json',
             }
         }
-        
         let url = 'https://rk7zodptd5.execute-api.us-east-1.amazonaws.com/Prod?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
-
         const sendData = async () => {
             try {
                 const data = await axios.post(url, reqBody, config).then(res => {
+                    this.setState(() => ({ loading: 3 }));
                     return res.data.body;
                 })
                 return data
@@ -181,7 +183,17 @@ class LayoutSection extends React.Component {
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <button onClick={this.sendFormData}>Submit</button>
+                                        <button onClick={this.sendFormData}>Email Me</button>
+                                    </div>
+                                </div>
+                            </div> :
+                            <p></p>}
+                        
+                        {this.state.loading === 3 ?
+                            <div class="row">
+                                <div class="col-75">
+                                    <div>
+                                        <label>Email sent successfully. Please check your inbox</label>
                                     </div>
                                 </div>
                             </div> :
