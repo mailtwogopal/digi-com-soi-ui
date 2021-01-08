@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import { Alert } from 'reactstrap';
+import { Checkmark } from 'react-checkmark';
 import './styles/components/layout.css';
 import * as ReactBootStrap from 'react-bootstrap';
 
@@ -97,15 +99,12 @@ class LayoutSection extends React.Component {
                 'Content-Type': 'application/json',
             }
         }
+        
         let url = 'https://rk7zodptd5.execute-api.us-east-1.amazonaws.com/Prod?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
         const sendData = async () => {
             try {
                 const data = await axios.post(url, reqBody, config).then(res => {
                     this.setState(() => ({ loading: 3 }));
-                    // const onSubmit = (values, onSubmitProps) => {
-                    //     onSubmitProps.onSubmitProps(false)
-                    //     onSubmitProps.resetForm()
-                    // }
                     this.inputName.value = '';
                     this.inputEmail.value = '';
                     this.inputImage.value = '';
@@ -160,7 +159,7 @@ class LayoutSection extends React.Component {
                             <div>
                                 <p> Fetching Details....</p>
                             </div> :
-                            <p></p>}
+                        <p></p>}
 
                         {this.state.loading === 2 ?
                             <div class="row">
@@ -178,7 +177,7 @@ class LayoutSection extends React.Component {
                                     </div>
                                 </div>
                             </div> :
-                            <p></p>}
+                        <p></p>}
 
                         {this.state.loading === 2 ?
                             <div class="row">
@@ -188,17 +187,18 @@ class LayoutSection extends React.Component {
                                     </div>
                                 </div>
                             </div> :
-                            <p></p>}
+                        <p></p>}
                         
                         {this.state.loading === 3 ?
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <label>Email sent successfully. Please check your inbox</label>
+                                        <Checkmark size='medium'></Checkmark>
+                                        <Alert color="info">Email sent successfully. Please check your inbox</Alert>
                                     </div>
                                 </div>
                             </div> :
-                            <p></p>}
+                        <p></p>}
                     </fieldset>
                 </form>
                 <div>
