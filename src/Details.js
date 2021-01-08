@@ -20,9 +20,6 @@ class LayoutSection extends React.Component {
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
-        this.initialStateName = {userName: ""};
-        this.initialStateEmail = {userEmail: ""};
-        this.initialStateImage = {image: ""};
     }
 
     callApi = async (reqBody, reqHeader) => {
@@ -89,10 +86,7 @@ class LayoutSection extends React.Component {
 
     sendFormData(e) {
         e.preventDefault();
-        this.setState(() => this.initialStateName);
-        this.setState(() => this.initialStateEmail);
-        this.setState(() => this.initialStateImage);
-        console.log("identified objects that will be email to " + this.state.userEmail + "are :")
+        console.log("identified objects that will be email to " + this.state.userEmail + " are :")
         console.log(this.emailbodyarr);
         let reqBody = {
             'subject': 'Analysis of the picture',
@@ -108,6 +102,13 @@ class LayoutSection extends React.Component {
             try {
                 const data = await axios.post(url, reqBody, config).then(res => {
                     this.setState(() => ({ loading: 3 }));
+                    // const onSubmit = (values, onSubmitProps) => {
+                    //     onSubmitProps.onSubmitProps(false)
+                    //     onSubmitProps.resetForm()
+                    // }
+                    this.inputName.value = '';
+                    this.inputEmail.value = '';
+                    this.inputImage.value = '';
                     return res.data.body;
                 })
                 return data
@@ -130,7 +131,7 @@ class LayoutSection extends React.Component {
                                 <label>Name</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='name' placeholder='Enter your name' onChange={(e) => this.onChangeName(e)} />
+                                <input ref={(ref) => this.inputName = ref} id="inputName" value={this.state.userName} autoComplete='Off' type='text' name='name' placeholder='Enter your name' onChange={(e) => this.onChangeName(e)} />
                             </div>
                         </div>
 
@@ -139,7 +140,7 @@ class LayoutSection extends React.Component {
                                 <label>Email</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='email' placeholder='Enter your email' onChange={(e) => this.onChangeEmail(e)} />
+                                <input ref={(ref) => this.inputEmail = ref} id="inputEmail" value={this.state.userEmail} autoComplete='Off' type='text' name='email' placeholder='Enter your email' onChange={(e) => this.onChangeEmail(e)} />
                             </div>
                         </div>
 
@@ -148,7 +149,7 @@ class LayoutSection extends React.Component {
                                 <label>Image</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='file' name='image' onChange={(e) => this.onChange(e)} />
+                                <input ref={(ref) => this.inputImage = ref} id="inputImage" autoComplete='Off' type='file' name='image' onChange={(e) => this.onChange(e)} />
                             </div>
                         </div>
 
@@ -183,7 +184,7 @@ class LayoutSection extends React.Component {
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <button onClick={this.sendFormData}>Email Me</button>
+                                        <button type='reset' onClick={this.sendFormData}>Email Me</button>
                                     </div>
                                 </div>
                             </div> :
