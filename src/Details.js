@@ -2,9 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import { Alert } from 'reactstrap';
 import { Checkmark } from 'react-checkmark';
+import 'bootstrap/dist/css/bootstrap.css';
 import './styles/components/layout.css';
-import * as ReactBootStrap from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+// import { Button, ButtonToolbar } from 'react-bootstrap';
+import ShowModal from './modal';
 
+// const emailid = "";
 class LayoutSection extends React.Component {
     constructor(props) {
         super(props);
@@ -18,7 +22,8 @@ class LayoutSection extends React.Component {
             objectCount: 0,
             objectsList: "",
             loading: 0,
-            error: undefined
+            error: undefined,
+            addModalShow: false
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
@@ -110,7 +115,7 @@ class LayoutSection extends React.Component {
                     this.inputImage.value = '';
                     return res.data.body;
                 })
-                return data
+                return data;
             } catch (e) {
                 console.log('Error in send data :' + e);
             }
@@ -120,6 +125,8 @@ class LayoutSection extends React.Component {
 
     render() {
         console.log("webClass Render");
+        let addModalClose = () => this.setState({addModalShow: false});
+        let subscribed = "false";
         return (
             <div class="container">
                 <form onSubmit={this.calcLayoutSection}>
@@ -152,9 +159,23 @@ class LayoutSection extends React.Component {
                             </div>
                         </div>
 
-                        <div class="row">
-                            <button disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}>Identify Objects</button>
-                        </div>
+                        {/* <div class="row"> */}
+                            {/* <div class="col-50"> */}
+                                {/* <button variant="primary" disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}>Identify Objects</button> */}
+                            <div class="button-align">
+                                {/* <ButtonToolbar> */}
+                                    <Button 
+                                        variant="primary"
+                                        disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}
+                                        type="submit"
+                                    >
+                                        Identify Objects
+                                    </Button>
+                                {/* </ButtonToolbar> */}
+                            </div>
+                            {/* </div> */}
+                        {/* </div> */}
+                        
                         {this.state.loading === 1 ?
                             <div>
                                 <p> Fetching Details....</p>
@@ -171,7 +192,7 @@ class LayoutSection extends React.Component {
                                                 return (<li key={index}>
                                                     <p>{lst.Name}</p>
                                                 </li>
-                                                )
+                                                )   
                                             })}
                                         </ol>
                                     </div>
@@ -179,31 +200,67 @@ class LayoutSection extends React.Component {
                             </div> :
                         <p></p>}
 
-                        {this.state.loading === 2 ?
-                            <div class="row">
-                                <div class="col-75">
-                                    <div>
-                                        <button type='reset' onClick={this.sendFormData}>Email Me</button>
+                        {this.state.loading === 2 && subscribed === "false" ?
+                            // <div class="row">
+                                // <div class="col-50">
+                                <div class="button-align">
+                                        {/* <button type='reset' onClick={this.sendFormData}>Email Me</button> */}
+                                        {/* <ButtonToolbar> */}
+                                            <Button 
+                                                variant="warning" 
+                                                onClick={() => {this.setState({addModalShow: true})}}>
+                                                    Consent
+                                            </Button>
+                                            <ShowModal 
+                                                dataFromParent={this.state.userEmail}
+                                                show={this.state.addModalShow}
+                                                onHide={addModalClose}
+                                            />
+                                        {/* </ButtonToolbar> */}
                                     </div>
-                                </div>
-                            </div> :
+                                // </div>
+                            // </div> :
+                            :
+                        <p></p>}
+
+                        {this.state.loading === 2 && subscribed === "false" ?
+                            // <div class="row">
+                                // <div class="col-50">
+                                <div class="button-align">
+                                        {/* <button type='reset' onClick={this.sendFormData}>Email Me</button> */}
+                                        {/* <ButtonToolbar> */}
+                                            <Button 
+                                                variant="success" 
+                                                // onClick={() => {this.setState({addModalShow: true})}}>
+                                                onClick={this.sendFormData}>
+                                                    Email Me
+                                            </Button>
+                                            {/* <ShowModal 
+                                                show={this.state.addModalShow}
+                                                onHide={addModalClose}
+                                            /> */}
+                                        {/* </ButtonToolbar> */}
+                                    </div>
+                                // </div>
+                            // </div> :
+                            :
                         <p></p>}
                         
                         {this.state.loading === 3 ?
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <Checkmark size='medium'></Checkmark>
-                                        <Alert color="info">Email sent successfully. Please check your inbox</Alert>
+                                        <Checkmark size='large'></Checkmark>
+                                        <Alert color="success">Email sent successfully. Please check your inbox</Alert>
                                     </div>
                                 </div>
                             </div> :
                         <p></p>}
                     </fieldset>
                 </form>
-                <div>
+                {/* <div>
                     <ReactBootStrap.Spinner animation="border" />
-                </div>
+                </div> */}
             </div>
         )
     }
