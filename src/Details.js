@@ -203,7 +203,8 @@ class LayoutSection extends React.Component {
                                     id="inputImage" 
                                     autoComplete='Off' 
                                     type='file' 
-                                    name='image' 
+                                    name='image'
+                                    accept='image/*'
                                     onChange={(e) => this.onChange(e)} 
                                 />
                             </div>
