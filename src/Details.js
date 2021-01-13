@@ -5,10 +5,8 @@ import { Checkmark } from 'react-checkmark';
 import 'bootstrap/dist/css/bootstrap.css';
 import './styles/components/layout.css';
 import { Button } from 'react-bootstrap';
-// import { Button, ButtonToolbar } from 'react-bootstrap';
 import ShowModal from './modal';
 
-// const emailid = "";
 class LayoutSection extends React.Component {
     constructor(props) {
         super(props);
@@ -27,6 +25,7 @@ class LayoutSection extends React.Component {
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
+        this.showConsentButton = true;
     }
 
     callApi = async (reqBody, reqHeader) => {
@@ -59,6 +58,35 @@ class LayoutSection extends React.Component {
         this.setState({ userEmail: e.target.value });
     }
 
+    onBlur(e) {
+        let url = 'https://83n292q7ka.execute-api.us-east-1.amazonaws.com/prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
+        const getSubscription = async () => {
+            try {
+                const data = await axios.get(url).then(res => { // toLowerCase()
+                    console.log('get method')
+                    console.log(res.data.ListSubscriptionsByTopicResponse.ListSubscriptionsByTopicResult.Subscriptions.length);
+                    res.data.ListSubscriptionsByTopicResponse.ListSubscriptionsByTopicResult.Subscriptions.map(item => {
+                        if ((this.state.userEmail.toLocaleLowerCase()) === item.Endpoint) {
+                            if (item.SubscriptionArn === "PendingConfirmation") {
+                                this.showConsentButton = true;
+                                return this.showConsentButton;
+                            }
+                            else {
+                                this.showConsentButton = false;
+                                return this.showConsentButton;
+                            }
+                        }
+                        return this.showConsentButton;
+                    })
+                })
+                return data;
+            } catch (e) {
+                console.log('Error in send data :' + e);
+            }
+        }
+        getSubscription();
+    }
+
     calcLayoutSection(e) {
         e.preventDefault();
         const name = (e.target.elements.name.value.trim());
@@ -71,12 +99,8 @@ class LayoutSection extends React.Component {
             "image": this.state.image
         }
         let reqHeader = {
-            //"Access-Control-Allow-Origin": "*",
-            //"Access-Control-Request-Headers" : "Origin, Content-Type",
-            //"Access-Control-Request-Methods": "OPTIONS,POST",
             "Content-Type": "application/json"
         }
-        // let url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
 
         const getLabels = async () => {
             const apiResp = await this.callApi(reqBody, reqHeader);
@@ -126,7 +150,6 @@ class LayoutSection extends React.Component {
     render() {
         console.log("webClass Render");
         let addModalClose = () => this.setState({addModalShow: false});
-        let subscribed = "false";
         return (
             <div class="container">
                 <form onSubmit={this.calcLayoutSection}>
@@ -137,7 +160,16 @@ class LayoutSection extends React.Component {
                                 <label>Name</label>
                             </div>
                             <div class="col-75">
-                                <input ref={(ref) => this.inputName = ref} id="inputName" value={this.state.userName} autoComplete='Off' type='text' name='name' placeholder='Enter your name' onChange={(e) => this.onChangeName(e)} />
+                                <input 
+                                    ref={(ref) => this.inputName = ref} 
+                                    id="inputName" value={this.state.userName} 
+                                    autoComplete='Off' 
+                                    type='text' 
+                                    name='name' 
+                                    placeholder='Enter your name' 
+                                    onChange={(e) => this.onChangeName(e)} 
+                                    required 
+                                />
                             </div>
                         </div>
 
@@ -146,7 +178,18 @@ class LayoutSection extends React.Component {
                                 <label>Email</label>
                             </div>
                             <div class="col-75">
-                                <input ref={(ref) => this.inputEmail = ref} id="inputEmail" value={this.state.userEmail} autoComplete='Off' type='text' name='email' placeholder='Enter your email' onChange={(e) => this.onChangeEmail(e)} />
+                                <input 
+                                    ref={(ref) => this.inputEmail = ref} 
+                                    id="inputEmail" value={this.state.userEmail} 
+                                    autoComplete='Off' 
+                                    type='email'
+                                    name='email' 
+                                    placeholder='Enter your email' 
+                                    onChange={(e) => this.onChangeEmail(e)} 
+                                    required
+                                    pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                    onBlur={(e) => this.onBlur(e) }
+                                />
                             </div>
                         </div>
 
@@ -155,15 +198,18 @@ class LayoutSection extends React.Component {
                                 <label>Image</label>
                             </div>
                             <div class="col-75">
-                                <input ref={(ref) => this.inputImage = ref} id="inputImage" autoComplete='Off' type='file' name='image' onChange={(e) => this.onChange(e)} />
+                                <input 
+                                    ref={(ref) => this.inputImage = ref} 
+                                    id="inputImage" 
+                                    autoComplete='Off' 
+                                    type='file' 
+                                    name='image' 
+                                    onChange={(e) => this.onChange(e)} 
+                                />
                             </div>
                         </div>
 
-                        {/* <div class="row"> */}
-                            {/* <div class="col-50"> */}
-                                {/* <button variant="primary" disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}>Identify Objects</button> */}
                             <div class="button-align">
-                                {/* <ButtonToolbar> */}
                                     <Button 
                                         variant="primary"
                                         disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}
@@ -171,10 +217,7 @@ class LayoutSection extends React.Component {
                                     >
                                         Identify Objects
                                     </Button>
-                                {/* </ButtonToolbar> */}
                             </div>
-                            {/* </div> */}
-                        {/* </div> */}
                         
                         {this.state.loading === 1 ?
                             <div>
@@ -200,12 +243,8 @@ class LayoutSection extends React.Component {
                             </div> :
                         <p></p>}
 
-                        {this.state.loading === 2 && subscribed === "false" ?
-                            // <div class="row">
-                                // <div class="col-50">
+                        {this.state.loading === 2 && this.showConsentButton === true ?
                                 <div class="button-align">
-                                        {/* <button type='reset' onClick={this.sendFormData}>Email Me</button> */}
-                                        {/* <ButtonToolbar> */}
                                             <Button 
                                                 variant="warning" 
                                                 onClick={() => {this.setState({addModalShow: true})}}>
@@ -216,34 +255,19 @@ class LayoutSection extends React.Component {
                                                 show={this.state.addModalShow}
                                                 onHide={addModalClose}
                                             />
-                                        {/* </ButtonToolbar> */}
                                     </div>
-                                // </div>
-                            // </div> :
-                            :
+                        :
                         <p></p>}
 
-                        {this.state.loading === 2 && subscribed === "false" ?
-                            // <div class="row">
-                                // <div class="col-50">
+                        {this.state.loading === 2 && this.showConsentButton === false ?
                                 <div class="button-align">
-                                        {/* <button type='reset' onClick={this.sendFormData}>Email Me</button> */}
-                                        {/* <ButtonToolbar> */}
                                             <Button 
                                                 variant="success" 
-                                                // onClick={() => {this.setState({addModalShow: true})}}>
                                                 onClick={this.sendFormData}>
                                                     Email Me
                                             </Button>
-                                            {/* <ShowModal 
-                                                show={this.state.addModalShow}
-                                                onHide={addModalClose}
-                                            /> */}
-                                        {/* </ButtonToolbar> */}
                                     </div>
-                                // </div>
-                            // </div> :
-                            :
+                        :
                         <p></p>}
                         
                         {this.state.loading === 3 ?
@@ -258,9 +282,6 @@ class LayoutSection extends React.Component {
                         <p></p>}
                     </fieldset>
                 </form>
-                {/* <div>
-                    <ReactBootStrap.Spinner animation="border" />
-                </div> */}
             </div>
         )
     }

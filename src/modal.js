@@ -7,7 +7,6 @@ import './styles/components/layout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../src/Details';
 
-
 class ShowModal extends Component {
     constructor(props){   
         super(props);
@@ -25,7 +24,6 @@ class ShowModal extends Component {
     };
 
     sendSubscription(props) {
-        // e.preventDefault ();
         console.log("inside modal component");
         console.log(this.props.dataFromParent);
         let reqBody = {
@@ -96,12 +94,6 @@ class ShowModal extends Component {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer class="button-align">
-                        {/* <Button 
-                            variant="danger" 
-                            onClick={this.props.onHide}
-                        >
-                            I Agree
-                        </Button> */}
                         <Button 
                             variant="danger"
                             type="submit"
