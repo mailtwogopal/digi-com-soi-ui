@@ -1,7 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import { Alert } from 'reactstrap';
+import { Checkmark } from 'react-checkmark';
+import 'bootstrap/dist/css/bootstrap.css';
 import './styles/components/layout.css';
-import * as ReactBootStrap from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import ShowModal from './modal';
 
 class LayoutSection extends React.Component {
     constructor(props) {
@@ -16,10 +20,12 @@ class LayoutSection extends React.Component {
             objectCount: 0,
             objectsList: "",
             loading: 0,
-            error: undefined
+            error: undefined,
+            addModalShow: false
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
+        this.showConsentButton = true;
     }
 
     callApi = async (reqBody, reqHeader) => {
@@ -52,6 +58,35 @@ class LayoutSection extends React.Component {
         this.setState({ userEmail: e.target.value });
     }
 
+    onBlur(e) {
+        let url = 'https://83n292q7ka.execute-api.us-east-1.amazonaws.com/prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
+        const getSubscription = async () => {
+            try {
+                const data = await axios.get(url).then(res => { // toLowerCase()
+                    console.log('get method')
+                    console.log(res.data.ListSubscriptionsByTopicResponse.ListSubscriptionsByTopicResult.Subscriptions.length);
+                    res.data.ListSubscriptionsByTopicResponse.ListSubscriptionsByTopicResult.Subscriptions.map(item => {
+                        if ((this.state.userEmail.toLocaleLowerCase()) === item.Endpoint) {
+                            if (item.SubscriptionArn === "PendingConfirmation") {
+                                this.showConsentButton = true;
+                                return this.showConsentButton;
+                            }
+                            else {
+                                this.showConsentButton = false;
+                                return this.showConsentButton;
+                            }
+                        }
+                        return this.showConsentButton;
+                    })
+                })
+                return data;
+            } catch (e) {
+                console.log('Error in send data :' + e);
+            }
+        }
+        getSubscription();
+    }
+
     calcLayoutSection(e) {
         e.preventDefault();
         const name = (e.target.elements.name.value.trim());
@@ -64,12 +99,8 @@ class LayoutSection extends React.Component {
             "image": this.state.image
         }
         let reqHeader = {
-            //"Access-Control-Allow-Origin": "*",
-            //"Access-Control-Request-Headers" : "Origin, Content-Type",
-            //"Access-Control-Request-Methods": "OPTIONS,POST",
             "Content-Type": "application/json"
         }
-        // let url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
 
         const getLabels = async () => {
             const apiResp = await this.callApi(reqBody, reqHeader);
@@ -80,21 +111,18 @@ class LayoutSection extends React.Component {
                 return this.emailbodyarr;
             })
             this.setState(() => ({ objectsList: apiResp, loading: 2 }));
-
         }
         getLabels();
     }
 
     sendFormData(e) {
         e.preventDefault();
-        console.log("identified object :")
+        console.log("identified objects that will be email to " + this.state.userEmail + " are :")
         console.log(this.emailbodyarr);
-        
         let reqBody = {
             'subject': 'Analysis of the picture',
-            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We will be sending our final analysis to your email address : ' + this.state.userEmail + ' which you provided. Analysis results are as follows : '+ this.emailbodyarr + '.'
+            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We glad to inform you that, our analysis is complete and objects are identified. The result is as follows : ' + this.emailbodyarr + '.'
         }
-
         let config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -102,13 +130,16 @@ class LayoutSection extends React.Component {
         }
         
         let url = 'https://rk7zodptd5.execute-api.us-east-1.amazonaws.com/Prod?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
-
         const sendData = async () => {
             try {
                 const data = await axios.post(url, reqBody, config).then(res => {
+                    this.setState(() => ({ loading: 3 }));
+                    this.inputName.value = '';
+                    this.inputEmail.value = '';
+                    this.inputImage.value = '';
                     return res.data.body;
                 })
-                return data
+                return data;
             } catch (e) {
                 console.log('Error in send data :' + e);
             }
@@ -118,6 +149,7 @@ class LayoutSection extends React.Component {
 
     render() {
         console.log("webClass Render");
+        let addModalClose = () => this.setState({addModalShow: false});
         return (
             <div class="container">
                 <form onSubmit={this.calcLayoutSection}>
@@ -128,7 +160,16 @@ class LayoutSection extends React.Component {
                                 <label>Name</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='name' placeholder='Enter your name' onChange={(e) => this.onChangeName(e)} />
+                                <input 
+                                    ref={(ref) => this.inputName = ref} 
+                                    id="inputName" value={this.state.userName} 
+                                    autoComplete='Off' 
+                                    type='text' 
+                                    name='name' 
+                                    placeholder='Enter your name' 
+                                    onChange={(e) => this.onChangeName(e)} 
+                                    required 
+                                />
                             </div>
                         </div>
 
@@ -137,7 +178,18 @@ class LayoutSection extends React.Component {
                                 <label>Email</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='text' name='email' placeholder='Enter your email' onChange={(e) => this.onChangeEmail(e)} />
+                                <input 
+                                    ref={(ref) => this.inputEmail = ref} 
+                                    id="inputEmail" value={this.state.userEmail} 
+                                    autoComplete='Off' 
+                                    type='email'
+                                    name='email' 
+                                    placeholder='Enter your email' 
+                                    onChange={(e) => this.onChangeEmail(e)} 
+                                    required
+                                    pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                    onBlur={(e) => this.onBlur(e) }
+                                />
                             </div>
                         </div>
 
@@ -146,18 +198,32 @@ class LayoutSection extends React.Component {
                                 <label>Image</label>
                             </div>
                             <div class="col-75">
-                                <input autoComplete='Off' type='file' name='image' onChange={(e) => this.onChange(e)} />
+                                <input 
+                                    ref={(ref) => this.inputImage = ref} 
+                                    id="inputImage" 
+                                    autoComplete='Off' 
+                                    type='file' 
+                                    name='image' 
+                                    onChange={(e) => this.onChange(e)} 
+                                />
                             </div>
                         </div>
 
-                        <div class="row">
-                            <button disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}>Identify Objects</button>
-                        </div>
+                            <div class="button-align">
+                                    <Button 
+                                        variant="primary"
+                                        disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}
+                                        type="submit"
+                                    >
+                                        Identify Objects
+                                    </Button>
+                            </div>
+                        
                         {this.state.loading === 1 ?
                             <div>
                                 <p> Fetching Details....</p>
                             </div> :
-                            <p></p>}
+                        <p></p>}
 
                         {this.state.loading === 2 ?
                             <div class="row">
@@ -169,28 +235,53 @@ class LayoutSection extends React.Component {
                                                 return (<li key={index}>
                                                     <p>{lst.Name}</p>
                                                 </li>
-                                                )
+                                                )   
                                             })}
                                         </ol>
                                     </div>
                                 </div>
                             </div> :
-                            <p></p>}
+                        <p></p>}
 
-                        {this.state.loading === 2 ?
+                        {this.state.loading === 2 && this.showConsentButton === true ?
+                                <div class="button-align">
+                                            <Button 
+                                                variant="warning" 
+                                                onClick={() => {this.setState({addModalShow: true})}}>
+                                                    Consent
+                                            </Button>
+                                            <ShowModal 
+                                                dataFromParent={this.state.userEmail}
+                                                show={this.state.addModalShow}
+                                                onHide={addModalClose}
+                                            />
+                                    </div>
+                        :
+                        <p></p>}
+
+                        {this.state.loading === 2 && this.showConsentButton === false ?
+                                <div class="button-align">
+                                            <Button 
+                                                variant="success" 
+                                                onClick={this.sendFormData}>
+                                                    Email Me
+                                            </Button>
+                                    </div>
+                        :
+                        <p></p>}
+                        
+                        {this.state.loading === 3 ?
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <button onClick={this.sendFormData}>Submit</button>
+                                        <Checkmark size='large'></Checkmark>
+                                        <Alert color="success">Email sent successfully. Please check your inbox</Alert>
                                     </div>
                                 </div>
                             </div> :
-                            <p></p>}
+                        <p></p>}
                     </fieldset>
                 </form>
-                <div>
-                    <ReactBootStrap.Spinner animation="border" />
-                </div>
             </div>
         )
     }
