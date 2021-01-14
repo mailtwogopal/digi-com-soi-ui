@@ -7,21 +7,23 @@ import './styles/components/layout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../src/Details';
 
-class ShowModal extends Component {
-    constructor(props){   
+class ShowModal extends Component{
+    
+    constructor(props) {
         super(props);
         console.log("Modal Constructor");
         this.sendSubscription = this.sendSubscription.bind(this);
         this.state = {
             snackbaropen: false, 
             snackbarmsg: ''
-        };
+            // iAgreeButtonClicked: false
+        }
         this.url = 'https://7c34ee83xf.execute-api.us-east-1.amazonaws.com/Prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo&Protocol=email';
-    }
+    };
     
     snackbarClose = (event) =>{
         this.setState({snackbaropen:false});
-    };
+    }
 
     sendSubscription(props) {
         console.log("inside modal component");
@@ -47,9 +49,10 @@ class ShowModal extends Component {
         }
         var consentResp = checkConsent();
         if (consentResp === "pending confirmation"){
-    }
-    this.props.onHide();
-    }
+        }
+        this.props.onHide();
+        // this.setState(() => ({iAgreeButtonClicked: true}))
+    }  
     render() {
         return (
             <div className="container">
@@ -98,6 +101,7 @@ class ShowModal extends Component {
                             variant="danger"
                             type="submit"
                             onClick={this.sendSubscription}
+                            // onClick={this.sendSubscription(this.state.iAgreeButtonClicked)}
                         >
                             I Agree
                         </Button>
@@ -107,5 +111,4 @@ class ShowModal extends Component {
         )
     }
 }
-
 export default ShowModal;
