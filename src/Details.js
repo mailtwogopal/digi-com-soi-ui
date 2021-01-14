@@ -13,6 +13,7 @@ class LayoutSection extends React.Component {
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
+        // this.update = this.update.bind(this);
         this.state = {
             userName: "",
             userEmail: "",
@@ -22,6 +23,7 @@ class LayoutSection extends React.Component {
             loading: 0,
             error: undefined,
             addModalShow: false
+            // iAgreeButtonClicked: false
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
@@ -147,9 +149,21 @@ class LayoutSection extends React.Component {
         sendData();
     }
 
+    // update(value){
+    //     return () => {
+    //        this.setState({
+    //          iAgreeButtonCclicked: value
+    //        });
+    //     }
+    //   }
+    // 
     render() {
         console.log("webClass Render");
-        let addModalClose = () => this.setState({addModalShow: false});
+        // console.log(this.state.iAgreeButtonClicked);
+        let addModalClose = () => {
+            this.setState({addModalShow: false, loading: 3, userName: '', userEmail: ''})
+            this.inputImage.value = '';
+        }
         return (
             <div class="container">
                 <form onSubmit={this.calcLayoutSection}>
@@ -253,6 +267,7 @@ class LayoutSection extends React.Component {
                                             </Button>
                                             <ShowModal 
                                                 dataFromParent={this.state.userEmail}
+                                                // data={this.update}
                                                 show={this.state.addModalShow}
                                                 onHide={addModalClose}
                                             />
