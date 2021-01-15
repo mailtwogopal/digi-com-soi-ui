@@ -15,8 +15,7 @@ class ShowModal extends Component {
         this.sendSubscription = this.sendSubscription.bind(this);
         this.state = {
             snackbaropen: false, 
-            snackbarmsg: '',
-            res: 0
+            snackbarmsg: ''
         }
         this.url = 'https://7c34ee83xf.execute-api.us-east-1.amazonaws.com/Prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo&Protocol=email';
     };
