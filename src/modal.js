@@ -16,6 +16,7 @@ class ShowModal extends Component {
         this.state = {
             snackbaropen: false, 
             snackbarmsg: '',
+            res: 0
         }
         this.url = 'https://7c34ee83xf.execute-api.us-east-1.amazonaws.com/Prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo&Protocol=email';
     };
@@ -38,6 +39,11 @@ class ShowModal extends Component {
             try {
                 console.log(JSON.stringify(reqBody));
                 const data = await axios.post(this.url, reqBody, config).then(res => {
+                    const sendData = () => {
+                        this.props.parentCallback("iAgreeButtonClicked");
+                    }
+                    sendData();
+                    this.props.onHide();
                     return res.data.SubscribeResponse.SubscribeResult.SubscriptionArn;
                 })
                 return data;
@@ -45,15 +51,7 @@ class ShowModal extends Component {
                 console.log('Error in send data :' + e);
             }
         }
-        var consentResp = checkConsent();
-        if (consentResp === "pending confirmation"){
-        }
-
-        const sendData = () => {
-            this.props.parentCallback("iAgreeButtonClicked");
-        }
-        sendData();
-        this.props.onHide();
+        checkConsent()
     }  
     render() {
         return (
