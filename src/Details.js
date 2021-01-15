@@ -13,7 +13,7 @@ class LayoutSection extends React.Component {
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
-        // this.update = this.update.bind(this);
+        this.callbackFunction = this.callbackFunction.bind(this);
         this.state = {
             userName: "",
             userEmail: "",
@@ -23,13 +23,17 @@ class LayoutSection extends React.Component {
             loading: 0,
             error: undefined,
             addModalShow: false
-            // iAgreeButtonClicked: false
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
         this.showConsentButton = true;
     }
 
+    callbackFunction = (fromModal) => {
+        if (fromModal !== "") {
+            this.setState(({loading: 3}))
+        }
+    }
     callApi = async (reqBody, reqHeader) => {
         try {
             const data = await axios.post(this.url, reqBody, { headers: reqHeader }).then(res => {
@@ -149,19 +153,10 @@ class LayoutSection extends React.Component {
         sendData();
     }
 
-    // update(value){
-    //     return () => {
-    //        this.setState({
-    //          iAgreeButtonCclicked: value
-    //        });
-    //     }
-    //   }
-    // 
     render() {
         console.log("webClass Render");
-        // console.log(this.state.iAgreeButtonClicked);
         let addModalClose = () => {
-            this.setState({addModalShow: false, loading: 3, userName: '', userEmail: ''})
+            this.setState({addModalShow: false, userName: '', userEmail: ''})
             this.inputImage.value = '';
         }
         return (
@@ -267,7 +262,7 @@ class LayoutSection extends React.Component {
                                             </Button>
                                             <ShowModal 
                                                 dataFromParent={this.state.userEmail}
-                                                // data={this.update}
+                                                parentCallback={this.callbackFunction}
                                                 show={this.state.addModalShow}
                                                 onHide={addModalClose}
                                             />
@@ -290,8 +285,13 @@ class LayoutSection extends React.Component {
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <Checkmark size='large'></Checkmark>
-                                        <Alert color="success">Email sent successfully. Please check your inbox</Alert>
+                                        <Checkmark 
+                                            size='large'>
+                                        </Checkmark>
+                                        <Alert 
+                                            color="success">
+                                                Email sent successfully. Please check your inbox
+                                        </Alert>
                                     </div>
                                 </div>
                             </div> :
