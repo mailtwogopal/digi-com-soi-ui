@@ -7,8 +7,8 @@ import './styles/components/layout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../src/Details';
 
-class ShowModal extends Component{
-    
+class ShowModal extends Component { 
+
     constructor(props) {
         super(props);
         console.log("Modal Constructor");
@@ -16,7 +16,6 @@ class ShowModal extends Component{
         this.state = {
             snackbaropen: false, 
             snackbarmsg: ''
-            // iAgreeButtonClicked: false
         }
         this.url = 'https://7c34ee83xf.execute-api.us-east-1.amazonaws.com/Prod/?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo&Protocol=email';
     };
@@ -27,7 +26,6 @@ class ShowModal extends Component{
 
     sendSubscription(props) {
         console.log("inside modal component");
-        console.log(this.props.dataFromParent);
         let reqBody = {
             "email": this.props.dataFromParent
         }
@@ -40,6 +38,11 @@ class ShowModal extends Component{
             try {
                 console.log(JSON.stringify(reqBody));
                 const data = await axios.post(this.url, reqBody, config).then(res => {
+                    const sendData = () => {
+                        this.props.parentCallback("iAgreeButtonClicked");
+                    }
+                    sendData();
+                    this.props.onHide();
                     return res.data.SubscribeResponse.SubscribeResult.SubscriptionArn;
                 })
                 return data;
@@ -47,11 +50,7 @@ class ShowModal extends Component{
                 console.log('Error in send data :' + e);
             }
         }
-        var consentResp = checkConsent();
-        if (consentResp === "pending confirmation"){
-        }
-        this.props.onHide();
-        // this.setState(() => ({iAgreeButtonClicked: true}))
+        checkConsent()
     }  
     render() {
         return (
@@ -101,7 +100,6 @@ class ShowModal extends Component{
                             variant="danger"
                             type="submit"
                             onClick={this.sendSubscription}
-                            // onClick={this.sendSubscription(this.state.iAgreeButtonClicked)}
                         >
                             I Agree
                         </Button>
