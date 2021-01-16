@@ -90,7 +90,7 @@ class ShowModal extends Component {
                         <Row>
                             <Col sm={12}>
                         <p>
-                            In order to receive email, please subscribe.
+                            Please click on the button below in order to subscribe and receive email.
                         </p>
                             </Col>
                         </Row>

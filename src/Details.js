@@ -156,8 +156,11 @@ class LayoutSection extends React.Component {
     render() {
         console.log("webClass Render");
         let addModalClose = () => {
-            this.setState({addModalShow: false, userName: '', userEmail: ''})
-            this.inputImage.value = '';
+            this.setState({addModalShow: false})
+            if (this.state.loading === 3) {
+                this.setState({userName: '', userEmail: ''})
+                this.inputImage.value = '';   
+            }
         }
         return (
             <div class="container">
