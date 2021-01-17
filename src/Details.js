@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './styles/components/layout.css';
 import { Button } from 'react-bootstrap';
 import ShowModal from './modal';
+import Table from 'react-bootstrap/Table'
 
 class LayoutSection extends React.Component {
     constructor(props) {
@@ -120,7 +121,6 @@ class LayoutSection extends React.Component {
         }
         getLabels();
     }
-
     sendFormData(e) {
         e.preventDefault();
         console.log("identified objects that will be email to " + this.state.userEmail + " are :")
@@ -242,7 +242,7 @@ class LayoutSection extends React.Component {
                             <div class="row">
                                 <div class="col-75">
                                     <div>
-                                        <ol>
+                                        {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (<li key={index}>
@@ -250,7 +250,24 @@ class LayoutSection extends React.Component {
                                                 </li>
                                                 )   
                                             })}
-                                        </ol>
+                                        </ol> */}
+                                        <Table responsive striped bordered hover size="sm">
+                                            <tr>
+                                                <th>#</th>
+                                                    <th>Idenfied Object</th>
+                                                    <th>Accuracy Level</th>
+                                            </tr>
+                                            {this.state.objectsList.Labels.map((lst, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index}</td>
+                                                        <td>{lst.Name}</td>
+                                                        <td>{Math.round(lst.Confidence)}</td>
+                                                    </tr>
+                                                );
+                                            }
+                                            )}
+                                        </Table>
                                     </div>
                                 </div>
                             </div> :

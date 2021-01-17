@@ -21,3 +21,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+src/test.json
+debug.log
+package-lock.json
+test.js
+modaljan12.js
+Detailsjan12.js
+Detailsjan13.js
+modaljan13.js
+Detailsjan16.js
+table.js
