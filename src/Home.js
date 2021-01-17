@@ -6,16 +6,16 @@ class LayoutClass extends Component{
 
     constructor(){   
         super();
-        this.state = {
+        /* this.state = {
             likeCount : 0
-        }
+        } */
         console.log("webClass Constructor");     
     }
 
-   countLike = () => {
+/*   countLike = () => {
         let totalCount = this.state.likeCount + 1
         this.setState({likeCount: totalCount});
-   }
+   } */
     
     render(){
         
@@ -26,9 +26,9 @@ class LayoutClass extends Component{
             <h2 align='center'>Test Harness</h2> 
             <LayoutSection/>
             <br/>
-            {this.state.likeCount > 100 ? <p> Reached 100 Likes </p>:''}
+            {/*    {this.state.likeCount > 100 ? <p> Reached 100 Likes </p>:''}
             <button onClick = {this.countLike} >Like</button>
-            <p> Total Likes: {this.state.likeCount}</p>
+            <p> Total Likes: {this.state.likeCount}</p> */}
             </div>
         )
     }
