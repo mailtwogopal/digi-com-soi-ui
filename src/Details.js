@@ -127,7 +127,8 @@ class LayoutSection extends React.Component {
     }
 
     handleClick(e) {
-        e.preventDefault();
+        window.location.reload();
+        /* // e.preventDefault();
         this.setState(()=>(
         {
             userName: "",
@@ -142,7 +143,7 @@ class LayoutSection extends React.Component {
             modaldisplay:"hide-section",
             formtitle:"Scan Details"
         })
-        )
+        ) */
     }
   
     sendFormData(e) {
@@ -246,7 +247,6 @@ class LayoutSection extends React.Component {
                                     accept='image/*'
                                     onChange={(e) => this.onChange(e)} 
                                 />
-                                
                                 <img src={(this.state.image).substr(-4)===".svg" ? this.state.image : `data:image/png;base64,${this.state.image}` } width="50px" alt="addimage"/>
                                 
                             </label>
