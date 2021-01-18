@@ -64,6 +64,8 @@
 
   .button_width{
     min-width:200px;
+    margin:0 auto;
+    margin-left:10px;
   }
 
   
@@ -138,8 +140,10 @@
       padding-bottom:0px;
       padding-top:25px;
     }
+    .button_width{
+      margin-left:0px;
+    }
     .close-button{
-
       margin:10px 0px 10px 0px;
     }
   }
