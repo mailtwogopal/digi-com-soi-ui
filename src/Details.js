@@ -242,6 +242,8 @@ class LayoutSection extends React.Component {
                             <div class="row">
                                 <div class="col-75">
                                     <div>
+                                        <img style = {{display: 'flex', width:'100%', height:'20rem' }}
+                                        src={`data:image/png;base64,${this.state.image}`} />
                                         {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
                                             {this.state.objectsList.Labels.map((lst, index) => {
