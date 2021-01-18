@@ -48,6 +48,7 @@ body {
 
 .loadingbar{
   color:white;
+  text-align: center;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
