@@ -15,7 +15,7 @@ class LayoutSection extends React.Component {
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
-        this.callbackFunction = this.callbackFunction.bind(this);
+        this.callbackFunction = this.callbackFunction.bind(this);        
         this.state = {
             userName: "",
             userEmail: "",
@@ -24,7 +24,9 @@ class LayoutSection extends React.Component {
             objectsList: "",
             loading: 0,
             error: undefined,
-            addModalShow: false
+            addModalShow: false,
+            inputsection:"show-section",
+            formtitle:"Scan Details"
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
@@ -118,10 +120,29 @@ class LayoutSection extends React.Component {
                 this.emailbodyarr.push(' ' + item.Name);
                 return this.emailbodyarr;
             })
-            this.setState(() => ({ objectsList: apiResp, loading: 2 }));
+            this.setState(() => ({ objectsList: apiResp, loading: 2, inputsection:'hide-section', formtitle:"Scan Result" }));
         }
         getLabels();
     }
+
+    handleClick(e) {
+        e.preventDefault();
+        this.setState(()=>(
+        {
+            userName: "",
+            userEmail: "",
+            image: addimage,
+            objectCount: 0,
+            objectsList: "",
+            loading: 0,
+            error: undefined,
+            addModalShow: false,
+            inputsection:"show-section",
+            formtitle:"Scan Details"
+        })
+        )
+    }
+  
     sendFormData(e) {
         e.preventDefault();
         console.log("identified objects that will be email to " + this.state.userEmail + " are :")
@@ -166,9 +187,10 @@ class LayoutSection extends React.Component {
         return (
             <div className="container-main">
                 <form className="container" onSubmit={this.calcLayoutSection}>
-                
-                        <div><h4 className="card-title">Scan Details</h4></div>
+
+                        <div><h4 className="card-title">{this.state.formtitle}</h4></div>
                         <hr className="splitter"></hr>
+                        <div className={this.state.inputsection}> 
                         <div className="row">
                             <div className="col-25">
                                 <label>Name</label>
@@ -235,26 +257,26 @@ class LayoutSection extends React.Component {
                             <div className="button-align">
                                     <Button 
                                         variant="primary"
-                                        disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}
+                                        disabled={((this.state.image).substr(-4)===".svg") ? true : false}
                                         type="submit"
-                                        className="hideProp"
+                                        className="hideProp button_width"
                                     >
                                         Scan Image
                                     </Button>
                             </div>
+                        </div>
                         
                         {this.state.loading === 1 ?
                             <div>
-                                <p> Fetching Details....</p>
+                                <p className="loadingbar"> Fetching Details....</p>
                             </div> :
                         <p></p>}
-
+                        
                         {this.state.loading === 2 ?
                             <div className="row">
-                                <div className="col-75">
+                                <div>
                                     <div>
-                                    <img className="scannedImage"
-                                    src={`data:image/png;base64,${this.state.image}`} />
+                                    <img className="scannedImage" alt="imagemissing" src={`data:image/png;base64,${this.state.image}`} />
 
                                         {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
@@ -265,18 +287,19 @@ class LayoutSection extends React.Component {
                                                 )   
                                             })}
                                         </ol> */}
-                                        <Table responsive striped bordered hover size="sm">
-                                            <tr>
-                                                <th>#</th>
+                                        <Table className="table_sec" responsive striped bordered hover size="sm">
+                                            <thead>
+                                                <tr><th>#</th>
                                                     <th>Identified Object</th>
                                                     <th>Accuracy Level</th>
-                                            </tr>
+                                                    </tr>
+                                            </thead>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (
                                                     <tr key={index}>
-                                                        <td>{index+1}</td>
+                                                        <td className="align-center">{index+1}</td>
                                                         <td>{lst.Name}</td>
-                                                        <td>{Math.round(lst.Confidence)}</td>
+                                                        <td className="align-center">{Math.round(lst.Confidence) + "%"}</td>
                                                     </tr>
                                                 );
                                             }
@@ -291,8 +314,16 @@ class LayoutSection extends React.Component {
                                 <div className="button-align">
                                             <Button 
                                                 variant="warning" 
+                                                className="button_width"
                                                 onClick={() => {this.setState({addModalShow: true})}}>
                                                     Consent
+                                            </Button>
+                                            <Button 
+                                                variant="secondary" 
+                                                className="close-button button_width"
+                                                onClick={(e) => this.handleClick(e)} 
+                                                >
+                                                    Back
                                             </Button>
                                             <ShowModal 
                                                 dataFromParent={this.state.userEmail}
@@ -308,6 +339,7 @@ class LayoutSection extends React.Component {
                                 <div className="button-align">
                                             <Button 
                                                 variant="success" 
+                                                className="button_width"
                                                 onClick={this.sendFormData}>
                                                     Email Me
                                             </Button>
@@ -317,7 +349,7 @@ class LayoutSection extends React.Component {
                         
                         {this.state.loading === 3 ?
                             <div className="row">
-                                <div className="col-75">
+                                <div className="emailConfirm">
                                     <div>
                                         <Checkmark 
                                             size='large'>
@@ -326,6 +358,14 @@ class LayoutSection extends React.Component {
                                             color="success">
                                                 Email sent successfully. Please check your inbox
                                         </Alert>
+                                        <Button 
+                                        variant="primary"
+                                        type="button"
+                                        className="close-button button_width"
+                                        onClick={(e) => this.handleClick(e)} 
+                                    >
+                                        Home
+                                    </Button>
                                     </div>
                                 </div>
                             </div> :

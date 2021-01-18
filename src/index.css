@@ -46,6 +46,9 @@ body {
   margin-bottom:30px;
 }
 
+.loadingbar{
+  color:white;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -65,14 +68,66 @@ code {
 }
 
 .scannedImage{
-  width:60%;
+  width:70%;
+  display:table;
+  margin:0 auto;
+  padding:20px;
 }
 
 .hideProp{
   display:block;
 }
 
-
+.close-button{
+  display: block;
+  margin:10px 10px 10px 10px;
+}
+.close{
+  max-width: 70px;
+}
 .container-color{
   background-color: #071d3a
+}
+
+.show-section{
+  display:block;
+}
+
+.hide-section{
+  display:none;
+}
+
+/* table */
+
+.table_sec{
+  min-width:100%;
+}
+.table_sec th{
+  color:white;
+  background-color:#1561a0;
+  text-align: center;
+}
+
+.table_sec td{
+  color:white;
+}
+
+.table_sec tr:nth-child(even){
+  background-color:#2c3541
+}
+
+.table_sec tr:hover{
+  background-color:grey;
+}
+
+.align-center{
+  text-align: center;
+}
+
+/* end table */
+
+.emailConfirm{
+  display:table;
+  margin:0 auto;
+  text-align: center;
 }
