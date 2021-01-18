@@ -90,7 +90,7 @@ class ShowModal extends Component {
                         <Row>
                             <Col sm={12}>
                         <p>
-                            Please click on the button below in order to subscribe and receive email.
+                            Please click on "Agree" button below in order to subscribe. Once you confirm subscription (Check your inbox), you can email identified object list to your email address.
                         </p>
                             </Col>
                         </Row>
