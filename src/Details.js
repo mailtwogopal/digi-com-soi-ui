@@ -8,6 +8,7 @@ import { Button } from 'react-bootstrap';
 import ShowModal from './modal';
 import Table from 'react-bootstrap/Table';
 import addimage from './assets/addimage.svg';
+import loadingIcon from './assets/loading.gif';
 
 class LayoutSection extends React.Component {
     constructor(props) {
