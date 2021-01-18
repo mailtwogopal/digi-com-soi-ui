@@ -98,7 +98,10 @@ code {
 }
 
 /* table */
-
+.result-table{
+  display: table;
+    margin: 0 auto;
+}
 .table_sec{
   min-width:100%;
 }

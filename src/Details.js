@@ -276,7 +276,7 @@ class LayoutSection extends React.Component {
                         
                         {this.state.loading === 2 ?
                             <div className="row">
-                                <div>
+                                <div className="result-table"> 
                                     <div>
                                     <img className="scannedImage" alt="imagemissing" src={`data:image/png;base64,${this.state.image}`} />
 
