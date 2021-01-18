@@ -346,6 +346,14 @@ class LayoutSection extends React.Component {
                                                 onClick={this.sendFormData}>
                                                     Email Me
                                             </Button>
+                                            <Button 
+                                                variant="secondary" 
+                                                className="button_width close-button "
+                                                onClick={(e) => this.handleClick(e)} 
+                                                >
+                                                    Back
+                                            </Button>
+                                            
                                     </div>
                         :
                         <p></p>}
