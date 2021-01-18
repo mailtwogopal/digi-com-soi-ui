@@ -296,6 +296,7 @@ class LayoutSection extends React.Component {
                                                     <th>Accuracy Level</th>
                                                     </tr>
                                             </thead>
+                                            <tbody>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (
                                                     <tr key={index}>
@@ -306,6 +307,7 @@ class LayoutSection extends React.Component {
                                                 );
                                             }
                                             )}
+                                            </tbody>
                                         </Table>
                                     </div>
                                 </div>
