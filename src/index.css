@@ -5,9 +5,74 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color:#05051b;
+  background-image: url('assets/background.jpg');
+  -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
+
+.banner{
+  height:100px;
+  border-bottom:1px solid #1561a0;
+  margin-bottom:20px;
+  background-color: #071d3a
+}
+.banner-text{
+  color:#c7d9e9;
+  padding:30px 20px 20px 20px;
+  font-size: 28px;
+  letter-spacing: 2px;
+}
+
+#inputImage{
+  display: none;
+}
+
+.addimageContainer{
+  cursor: pointer;
+  min-height:75px;
+}
+
+.card-title{
+  color:#76afdd;
+  letter-spacing: 3px;
+}
+
+.splitter{
+  border-top:2px solid blue;
+  margin:0;
+  margin-bottom:30px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.red{
+  border:1px solid red
+}
+
+
+.blue{
+  border:1px solid blue
+}
+
+.green{
+  border:1px solid green
+}
+
+.scannedImage{
+  width:60%;
+}
+
+.hideProp{
+  display:block;
+}
+
+
+.container-color{
+  background-color: #071d3a
 }

@@ -22,11 +22,11 @@ class LayoutClass extends Component{
         console.log("webClass Render");
         return(
             <div>
-            <h1 align='center'>Smart Object Identifier</h1> 
-            <h2 align='center'>Test Harness</h2> 
-            <LayoutSection/>
-            <br/>
-            {/*    {this.state.likeCount > 100 ? <p> Reached 100 Likes </p>:''}
+                <div className="banner">
+                    <h1 className="banner-text">SMART EYE</h1>
+                </div>
+                <LayoutSection />
+                {/*    {this.state.likeCount > 100 ? <p> Reached 100 Likes </p>:''}
             <button onClick = {this.countLike} >Like</button>
             <p> Total Likes: {this.state.likeCount}</p> */}
             </div>

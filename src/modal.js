@@ -95,7 +95,7 @@ class ShowModal extends Component {
                             </Col>
                         </Row>
                     </Modal.Body>
-                    <Modal.Footer class="button-align">
+                    <Modal.Footer className="button-align">
                         <Button 
                             variant="danger"
                             type="submit"

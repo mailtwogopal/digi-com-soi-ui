@@ -6,7 +6,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './styles/components/layout.css';
 import { Button } from 'react-bootstrap';
 import ShowModal from './modal';
-import Table from 'react-bootstrap/Table'
+import Table from 'react-bootstrap/Table';
+import addimage from './assets/addimage.svg';
 
 class LayoutSection extends React.Component {
     constructor(props) {
@@ -18,7 +19,7 @@ class LayoutSection extends React.Component {
         this.state = {
             userName: "",
             userEmail: "",
-            image: "",
+            image: addimage,
             objectCount: 0,
             objectsList: "",
             loading: 0,
@@ -163,15 +164,16 @@ class LayoutSection extends React.Component {
             }
         }
         return (
-            <div class="container">
-                <form onSubmit={this.calcLayoutSection}>
-                    <fieldset>
-                        <legend>Details</legend>
-                        <div class="row">
-                            <div class="col-25">
+            <div className="container-main">
+                <form className="container" onSubmit={this.calcLayoutSection}>
+                
+                        <div><h4 className="card-title">Scan Details</h4></div>
+                        <hr className="splitter"></hr>
+                        <div className="row">
+                            <div className="col-25">
                                 <label>Name</label>
                             </div>
-                            <div class="col-75">
+                            <div className="col-75">
                                 <input 
                                     ref={(ref) => this.inputName = ref} 
                                     id="inputName" value={this.state.userName} 
@@ -185,11 +187,11 @@ class LayoutSection extends React.Component {
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-25">
+                        <div className="row">
+                            <div className="col-25">
                                 <label>Email</label>
                             </div>
-                            <div class="col-75">
+                            <div className="col-75">
                                 <input 
                                     ref={(ref) => this.inputEmail = ref} 
                                     id="inputEmail" value={this.state.userEmail} 
@@ -205,11 +207,12 @@ class LayoutSection extends React.Component {
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-25">
-                                <label>Image</label>
+                        <div className="row">
+                            <div className="col-25">
+                                <label>Add Image</label>
                             </div>
-                            <div class="col-75">
+                            <div className="col-75">
+                            <label className="addimageContainer">
                                 <input 
                                     ref={(ref) => this.inputImage = ref} 
                                     id="inputImage" 
@@ -219,16 +222,24 @@ class LayoutSection extends React.Component {
                                     accept='image/*'
                                     onChange={(e) => this.onChange(e)} 
                                 />
+                                
+                                <img src={(this.state.image).substr(-4)===".svg" ? this.state.image : `data:image/png;base64,${this.state.image}` } width="50px" alt="addimage"/>
+                                
+                            </label>
+                             
+                                
+                               
                             </div>
                         </div>
 
-                            <div class="button-align">
+                            <div className="button-align">
                                     <Button 
                                         variant="primary"
                                         disabled={((!this.state.userName) && (!this.state.userEmail) && (!this.state.image))}
                                         type="submit"
+                                        className="hideProp"
                                     >
-                                        Identify Objects
+                                        Scan Image
                                     </Button>
                             </div>
                         
@@ -239,10 +250,10 @@ class LayoutSection extends React.Component {
                         <p></p>}
 
                         {this.state.loading === 2 ?
-                            <div class="row">
-                                <div class="col-75">
+                            <div className="row">
+                                <div className="col-75">
                                     <div>
-                                    <img style = {{display: 'flex', width:'100%', height:'20rem' }}
+                                    <img className="scannedImage"
                                     src={`data:image/png;base64,${this.state.image}`} />
 
                                         {/* <ol>
@@ -277,7 +288,7 @@ class LayoutSection extends React.Component {
                         <p></p>}
 
                         {this.state.loading === 2 && this.showConsentButton === true ?
-                                <div class="button-align">
+                                <div className="button-align">
                                             <Button 
                                                 variant="warning" 
                                                 onClick={() => {this.setState({addModalShow: true})}}>
@@ -294,7 +305,7 @@ class LayoutSection extends React.Component {
                         <p></p>}
 
                         {this.state.loading === 2 && this.showConsentButton === false ?
-                                <div class="button-align">
+                                <div className="button-align">
                                             <Button 
                                                 variant="success" 
                                                 onClick={this.sendFormData}>
@@ -305,8 +316,8 @@ class LayoutSection extends React.Component {
                         <p></p>}
                         
                         {this.state.loading === 3 ?
-                            <div class="row">
-                                <div class="col-75">
+                            <div className="row">
+                                <div className="col-75">
                                     <div>
                                         <Checkmark 
                                             size='large'>
@@ -319,7 +330,7 @@ class LayoutSection extends React.Component {
                                 </div>
                             </div> :
                         <p></p>}
-                    </fieldset>
+                    
                 </form>
             </div>
         )
