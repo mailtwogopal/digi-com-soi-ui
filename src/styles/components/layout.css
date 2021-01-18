@@ -104,7 +104,7 @@
   
   /* Clear floats after the columns */
   .row{
-    width:80%;
+    /* width:80%; */
     margin:0 auto;
     margin-bottom:25px;
     

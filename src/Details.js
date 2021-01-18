@@ -26,6 +26,7 @@ class LayoutSection extends React.Component {
             error: undefined,
             addModalShow: false,
             inputsection:"show-section",
+            modaldisplay:"hide-section",
             formtitle:"Scan Details"
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
@@ -138,6 +139,7 @@ class LayoutSection extends React.Component {
             error: undefined,
             addModalShow: false,
             inputsection:"show-section",
+            modaldisplay:"hide-section",
             formtitle:"Scan Details"
         })
         )
@@ -315,7 +317,7 @@ class LayoutSection extends React.Component {
                                             <Button 
                                                 variant="warning" 
                                                 className="button_width"
-                                                onClick={() => {this.setState({addModalShow: true})}}>
+                                                onClick={() => {this.setState({addModalShow: true, modaldisplay:"show-section"})}}>
                                                     Consent
                                             </Button>
                                             <Button 
@@ -330,6 +332,7 @@ class LayoutSection extends React.Component {
                                                 parentCallback={this.callbackFunction}
                                                 show={this.state.addModalShow}
                                                 onHide={addModalClose}
+                                                display={this.state.modaldisplay}
                                             />
                                     </div>
                         :

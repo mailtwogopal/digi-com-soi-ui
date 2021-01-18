@@ -54,7 +54,7 @@ class ShowModal extends Component {
     }  
     render() {
         return (
-            <div className="container">
+            <div className={this.props.display + " container"} >
                 <Snackbar 
                 anchorOrigin={{vertical:'bottom',horizontal:'center'}}
                 open = {this.state.snackbaropen}
