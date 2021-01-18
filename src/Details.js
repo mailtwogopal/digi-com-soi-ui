@@ -269,8 +269,9 @@ class LayoutSection extends React.Component {
                         </div>
                         
                         {this.state.loading === 1 ?
-                            <div>
-                                <p className="loadingbar"> Fetching Details....</p>
+                            <div className="loadingbar">
+                                <img src = {loadingIcon} alt = "fetching details..." />
+                             {/* <p className="loadingbar"> Fetching Details....</p> */}
                             </div> :
                         <p></p>}
                         
