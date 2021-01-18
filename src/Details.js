@@ -322,7 +322,7 @@ class LayoutSection extends React.Component {
                                             </Button>
                                             <Button 
                                                 variant="secondary" 
-                                                className="button_width close-button "
+                                                className="close-button "
                                                 onClick={(e) => this.handleClick(e)} 
                                                 >
                                                     Back
@@ -348,7 +348,7 @@ class LayoutSection extends React.Component {
                                             </Button>
                                             <Button 
                                                 variant="secondary" 
-                                                className="button_width close-button "
+                                                className="close-button "
                                                 onClick={(e) => this.handleClick(e)} 
                                                 >
                                                     Back
