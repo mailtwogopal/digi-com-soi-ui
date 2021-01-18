@@ -257,13 +257,13 @@ class LayoutSection extends React.Component {
                                         <Table responsive striped bordered hover size="sm">
                                             <tr>
                                                 <th>#</th>
-                                                    <th>Idenfied Object</th>
+                                                    <th>Identified Object</th>
                                                     <th>Accuracy Level</th>
                                             </tr>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (
                                                     <tr key={index}>
-                                                        <td>{index}</td>
+                                                        <td>{index+1}</td>
                                                         <td>{lst.Name}</td>
                                                         <td>{Math.round(lst.Confidence)}</td>
                                                     </tr>
