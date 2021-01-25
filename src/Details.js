@@ -17,7 +17,7 @@ class LayoutSection extends React.Component {
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
-        this.callbackFunction = this.callbackFunction.bind(this);        
+        this.callbackFunction = this.callbackFunction.bind(this);
         this.state = {
             userName: "",
             userEmail: "",
@@ -27,9 +27,9 @@ class LayoutSection extends React.Component {
             loading: 0,
             error: undefined,
             addModalShow: false,
-            inputsection:"show-section",
-            modaldisplay:"hide-section",
-            formtitle:"Scan Details"
+            inputsection: "show-section",
+            modaldisplay: "hide-section",
+            formtitle: "Scan Details"
         };
         this.url = 'https://dkkmcz6a8g.execute-api.us-east-1.amazonaws.com/dev/upload-to-s3?username=' + this.state.userEmail;
         this.emailbodyarr = [];
@@ -39,7 +39,7 @@ class LayoutSection extends React.Component {
 
     callbackFunction = (fromModal) => {
         if (fromModal !== "") {
-            this.setState(({loading: 3}))
+            this.setState(({ loading: 3 }))
         }
     }
     callApi = async (reqBody, reqHeader) => {
@@ -124,12 +124,29 @@ class LayoutSection extends React.Component {
                 this.emailbodyarr.push(' ' + item.Name);
                 return this.emailbodyarr;
             })
-            apiResp.Labels.filter(
+            //let instanceArray = {};
+            let forInstanceBounding = apiResp;
+            let result = forInstanceBounding.Labels.filter(
+                (val, index, instanceArray) => 
+                //{
+                    val.Instances.length > 0
+                   // return true
+                //}
+            )
+            result.map(
                 (val, index) => {
-                    console.log(val.Instances.length);
+                    console.log("name is " + val.Name);
+                    console.log("confidence is " + val.Confidence);
+                    console.log(val.Instances);   
+                    val.Instances.map(
+                        (value, index) => {
+                        console.log(value.BoundingBox.Width);
+                        }
+                    )                 
                 }
             )
-            this.setState(() => ({ objectsList: apiResp, loading: 2, inputsection:'hide-section', formtitle:"Scan Result" }));
+            console.log(result);
+            this.setState(() => ({ objectsList: apiResp, loading: 2, inputsection: 'hide-section', formtitle: "Scan Result" }));
         }
         getLabels();
     }
@@ -153,21 +170,21 @@ class LayoutSection extends React.Component {
         })
         ) */
     }
-  
+
     sendFormData(e) {
         e.preventDefault();
         console.log("identified objects that will be email to " + this.state.userEmail + " are :")
         console.log(this.emailbodyarr);
         let reqBody = {
             'subject': 'Analysis of the picture',
-            "message": 'Dear ' +  this.state.userName +  '. Thanks for uploading the picture for analysis. We glad to inform you that, our analysis is complete and objects are identified. The result is as follows : ' + this.emailbodyarr + '.'
+            "message": 'Dear ' + this.state.userName + '. Thanks for uploading the picture for analysis. We glad to inform you that, our analysis is complete and objects are identified. The result is as follows : ' + this.emailbodyarr + '.'
         }
         let config = {
             headers: {
                 'Content-Type': 'application/json',
             }
         }
-        
+
         let url = 'https://rk7zodptd5.execute-api.us-east-1.amazonaws.com/Prod?TopicArn=arn:aws:sns:us-east-1:268057325970:ListInfo'
         const sendData = async () => {
             try {
@@ -189,10 +206,10 @@ class LayoutSection extends React.Component {
     render() {
         console.log("webClass Render");
         let addModalClose = () => {
-            this.setState({addModalShow: false})
+            this.setState({ addModalShow: false })
             if (this.state.loading === 3) {
-                this.setState({userName: '', userEmail: ''})
-                this.inputImage.value = '';   
+                this.setState({ userName: '', userEmail: '' })
+                this.inputImage.value = '';
             }
         }
         const params = {
@@ -204,41 +221,41 @@ class LayoutSection extends React.Component {
                 //[300, 0, 250, 250],
                 //[700, 0, 300, 25],
                 //[1100, 0, 250, 300]
-                 {coord: [0, 0, 250, 250], label: "test"},
-                 {coord: [300, 0, 250, 250], label: "A"},
-                 {coord: [700, 0, 300, 25], label: "B"},
-                 {coord: [1100, 0, 25, 300], label: "C"}
-              ],
-              options: {
+                { coord: [0, 0, 250, 250], label: "test" },
+                { coord: [300, 0, 250, 250], label: "A" },
+                { coord: [700, 0, 300, 25], label: "B" },
+                { coord: [1100, 0, 25, 300], label: "C" }
+            ],
+            options: {
                 colors: {
-                  normal: 'rgba(255,225,255,1)',
-                  selected: 'rgba(0,225,204,1)',
-                  unselected: 'rgba(100,100,100,1)'
+                    normal: 'rgba(255,225,255,1)',
+                    selected: 'rgba(0,225,204,1)',
+                    unselected: 'rgba(100,100,100,1)'
                 },
                 showLabels: true
-              }
+            }
         }
         return (
             <div className="container-main">
                 <form className="container" onSubmit={this.calcLayoutSection}>
 
-                        <div><h4 className="card-title">{this.state.formtitle}</h4></div>
-                        <hr className="splitter"></hr>
-                        <div className={this.state.inputsection}> 
+                    <div><h4 className="card-title">{this.state.formtitle}</h4></div>
+                    <hr className="splitter"></hr>
+                    <div className={this.state.inputsection}>
                         <div className="row">
                             <div className="col-25">
                                 <label>Name</label>
                             </div>
                             <div className="col-75">
-                                <input 
-                                    ref={(ref) => this.inputName = ref} 
-                                    id="inputName" value={this.state.userName} 
-                                    autoComplete='Off' 
-                                    type='text' 
-                                    name='name' 
-                                    placeholder='Enter your name' 
-                                    onChange={(e) => this.onChangeName(e)} 
-                                    required 
+                                <input
+                                    ref={(ref) => this.inputName = ref}
+                                    id="inputName" value={this.state.userName}
+                                    autoComplete='Off'
+                                    type='text'
+                                    name='name'
+                                    placeholder='Enter your name'
+                                    onChange={(e) => this.onChangeName(e)}
+                                    required
                                 />
                             </div>
                         </div>
@@ -248,17 +265,17 @@ class LayoutSection extends React.Component {
                                 <label>Email</label>
                             </div>
                             <div className="col-75">
-                                <input 
-                                    ref={(ref) => this.inputEmail = ref} 
-                                    id="inputEmail" value={this.state.userEmail} 
-                                    autoComplete='Off' 
+                                <input
+                                    ref={(ref) => this.inputEmail = ref}
+                                    id="inputEmail" value={this.state.userEmail}
+                                    autoComplete='Off'
                                     type='email'
-                                    name='email' 
-                                    placeholder='Enter your email' 
-                                    onChange={(e) => this.onChangeEmail(e)} 
+                                    name='email'
+                                    placeholder='Enter your email'
+                                    onChange={(e) => this.onChangeEmail(e)}
                                     required
                                     pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
-                                    onBlur={(e) => this.onBlur(e) }
+                                    onBlur={(e) => this.onBlur(e)}
                                 />
                             </div>
                         </div>
@@ -268,50 +285,50 @@ class LayoutSection extends React.Component {
                                 <label>Add Image</label>
                             </div>
                             <div className="col-75">
-                            <label className="addimageContainer">
-                                <input 
-                                    ref={(ref) => this.inputImage = ref} 
-                                    id="inputImage" 
-                                    autoComplete='Off' 
-                                    type='file' 
-                                    name='image'
-                                    accept='image/*'
-                                    onChange={(e) => this.onChange(e)} 
-                                />
-                                <img src={(this.state.image).substr(-4)===".svg" ? this.state.image : `data:image/png;base64,${this.state.image}` } width="50px" alt="addimage"/>
-                                
-                            </label>
-                             
-                                
-                               
+                                <label className="addimageContainer">
+                                    <input
+                                        ref={(ref) => this.inputImage = ref}
+                                        id="inputImage"
+                                        autoComplete='Off'
+                                        type='file'
+                                        name='image'
+                                        accept='image/*'
+                                        onChange={(e) => this.onChange(e)}
+                                    />
+                                    <img src={(this.state.image).substr(-4) === ".svg" ? this.state.image : `data:image/png;base64,${this.state.image}`} width="50px" alt="addimage" />
+
+                                </label>
+
+
+
                             </div>
                         </div>
 
-                            <div className="button-align">
-                                    <Button 
-                                        variant="primary"
-                                        disabled={((this.state.image).substr(-4)===".svg") ? true : false}
-                                        type="submit"
-                                        className="hideProp button_width"
-                                    >
-                                        Scan Image
+                        <div className="button-align">
+                            <Button
+                                variant="primary"
+                                disabled={((this.state.image).substr(-4) === ".svg") ? true : false}
+                                type="submit"
+                                className="hideProp button_width"
+                            >
+                                Scan Image
                                     </Button>
-                            </div>
                         </div>
-                        
-                        {this.state.loading === 1 ?
-                            <div className="loadingbar">
-                                <img src = {loadingIcon} alt = "fetching details..." />
-                             {/* <p className="loadingbar"> Fetching Details....</p> */}
-                            </div> :
+                    </div>
+
+                    {this.state.loading === 1 ?
+                        <div className="loadingbar">
+                            <img src={loadingIcon} alt="fetching details..." />
+                            {/* <p className="loadingbar"> Fetching Details....</p> */}
+                        </div> :
                         <p></p>}
-                        
-                        {this.state.loading === 2 ?
-                            <div className="row">
-                                <div className="result-table"> 
-                                    <div>
+
+                    {this.state.loading === 2 ?
+                        <div className="row">
+                            <div className="result-table">
+                                <div>
                                     {/* <img className="scannedImage" alt="imagemissing" src={} /> */}
-                                    <BoundingBox image = {params.image} boxes = {params.boxes} options = {params.options.normal} />
+                                    <BoundingBox image={params.image} boxes={params.boxes} options={params.options.normal} />
                                     {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
                                             {this.state.objectsList.Labels.map((lst, index) => {
@@ -321,101 +338,101 @@ class LayoutSection extends React.Component {
                                                 )   
                                             })}
                                         </ol> */}
-                                        <Table className="table_sec" responsive striped bordered hover size="sm">
-                                            <thead>
-                                                <tr><th>#</th>
-                                                    <th>Identified Object</th>
-                                                    <th>Accuracy Level</th>
-                                                    </tr>
-                                            </thead>
-                                            <tbody>
+                                    <Table className="table_sec" responsive striped bordered hover size="sm">
+                                        <thead>
+                                            <tr><th>#</th>
+                                                <th>Identified Object</th>
+                                                <th>Accuracy Level</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (
                                                     <tr key={index}>
-                                                        <td className="align-center">{index+1}</td>
+                                                        <td className="align-center">{index + 1}</td>
                                                         <td>{lst.Name}</td>
                                                         <td className="align-center">{Math.round(lst.Confidence) + "%"}</td>
                                                     </tr>
                                                 );
                                             }
                                             )}
-                                            </tbody>
-                                        </Table>
-                                    </div>
+                                        </tbody>
+                                    </Table>
                                 </div>
-                            </div> :
+                            </div>
+                        </div> :
                         <p></p>}
 
-                        {this.state.loading === 2 && this.showConsentButton === true ?
-                                <div className="button-align">
-                                            <Button 
-                                                variant="warning" 
-                                                className="button_width"
-                                                onClick={() => {this.setState({addModalShow: true, modaldisplay:"show-section"})}}>
-                                                    Consent
+                    {this.state.loading === 2 && this.showConsentButton === true ?
+                        <div className="button-align">
+                            <Button
+                                variant="warning"
+                                className="button_width"
+                                onClick={() => { this.setState({ addModalShow: true, modaldisplay: "show-section" }) }}>
+                                Consent
                                             </Button>
-                                            <Button 
-                                                variant="secondary" 
-                                                className="close-button "
-                                                onClick={(e) => this.handleClick(e)} 
-                                                >
-                                                    Back
+                            <Button
+                                variant="secondary"
+                                className="close-button "
+                                onClick={(e) => this.handleClick(e)}
+                            >
+                                Back
                                             </Button>
-                                            <ShowModal 
-                                                dataFromParent={this.state.userEmail}
-                                                parentCallback={this.callbackFunction}
-                                                show={this.state.addModalShow}
-                                                onHide={addModalClose}
-                                                display={this.state.modaldisplay}
-                                            />
-                                    </div>
+                            <ShowModal
+                                dataFromParent={this.state.userEmail}
+                                parentCallback={this.callbackFunction}
+                                show={this.state.addModalShow}
+                                onHide={addModalClose}
+                                display={this.state.modaldisplay}
+                            />
+                        </div>
                         :
                         <p></p>}
 
-                        {this.state.loading === 2 && this.showConsentButton === false ?
-                                <div className="button-align">
-                                            <Button 
-                                                variant="success" 
-                                                className="button_width"
-                                                onClick={this.sendFormData}>
-                                                    Email Me
+                    {this.state.loading === 2 && this.showConsentButton === false ?
+                        <div className="button-align">
+                            <Button
+                                variant="success"
+                                className="button_width"
+                                onClick={this.sendFormData}>
+                                Email Me
                                             </Button>
-                                            <Button 
-                                                variant="secondary" 
-                                                className="close-button "
-                                                onClick={(e) => this.handleClick(e)} 
-                                                >
-                                                    Back
+                            <Button
+                                variant="secondary"
+                                className="close-button "
+                                onClick={(e) => this.handleClick(e)}
+                            >
+                                Back
                                             </Button>
-                                            
-                                    </div>
+
+                        </div>
                         :
                         <p></p>}
-                        
-                        {this.state.loading === 3 ?
-                            <div className="row">
-                                <div className="emailConfirm">
-                                    <div>
-                                        <Checkmark 
-                                            size='large'>
-                                        </Checkmark>
-                                        <Alert 
-                                            color="success">
-                                                Email sent successfully. Please check your inbox
+
+                    {this.state.loading === 3 ?
+                        <div className="row">
+                            <div className="emailConfirm">
+                                <div>
+                                    <Checkmark
+                                        size='large'>
+                                    </Checkmark>
+                                    <Alert
+                                        color="success">
+                                        Email sent successfully. Please check your inbox
                                         </Alert>
-                                        <Button 
+                                    <Button
                                         variant="primary"
                                         type="button"
                                         className="close-button button_width"
-                                        onClick={(e) => this.handleClick(e)} 
+                                        onClick={(e) => this.handleClick(e)}
                                     >
                                         Home
                                     </Button>
-                                    </div>
                                 </div>
-                            </div> :
+                            </div>
+                        </div> :
                         <p></p>}
-                    
+
                 </form>
             </div>
         )
