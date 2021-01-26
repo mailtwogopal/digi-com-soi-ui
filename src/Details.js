@@ -24,6 +24,7 @@ class LayoutSection extends React.Component {
         this.confidence = 0;
         this.result = [];
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
+        this.FnShowBounding = this.FnShowBounding.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
         this.callbackFunction = this.callbackFunction.bind(this);
@@ -229,6 +230,36 @@ class LayoutSection extends React.Component {
         sendData();
     }
 
+    FnShowBounding(){
+        return (
+        this.result.map(
+            (val, index) => {
+                //console.log("name is " + val.Name);
+                var coords = [];
+                
+                val.Instances.map(
+                    (value, ind) => { 
+                        this.confidence = value.Confidence;
+                        coords[ind] = new Array();
+                        coords[ind].push
+                            (
+                                value.BoundingBox.Left * this.imageWidth,
+                                value.BoundingBox.Top * this.imageHeight,
+                                value.BoundingBox.Width * this.imageWidth,
+                                value.BoundingBox.Height * this.imageHeight
+                            ); 
+                                
+                         //,
+                       // console.log(coords[ind])
+                }
+                    
+                )//end of inner map
+                return coords;
+            }
+        )//end of outer
+        )
+    }
+
     render() {
         console.log("webClass Render");
         console.log("boxleft insid render " + this.result);
@@ -265,7 +296,9 @@ class LayoutSection extends React.Component {
             }
         }
         return (
+            
             <div className="container-main">
+                
                 <form className="container" onSubmit={this.calcLayoutSection}>
 
                     <div><h4 className="card-title">{this.state.formtitle}</h4></div>
@@ -368,40 +401,34 @@ class LayoutSection extends React.Component {
                                     src={`data:image/png;base64,${this.state.image}`} 
                                       onClick={()=> {this.imageClick()}}
                                     /> */}
+                                    {console.log("before fn console"),
+                                    console.log(this.FnShowBounding()),
+                                    this.FnShowBounding().map((currentVal, coordindex) => {
+                                        var boxcoord = [];
+                                        for ( var i =0; i < currentVal.length ; i++){
+                                            console.log(currentVal[i]);
+                                        
+                                       var coordobj =  {coord : currentVal[i]}
+                                        boxcoord.push(coordobj)
                                     
-                                    {this.result.map(
-                                        (val, index) => {
-                                            console.log("name is " + val.Name);
-                                            console.log("confidence is " + val.Confidence);
-                                            var coords = [];
-                                            return (
-                                            val.Instances.map(
-                                                (value, ind) => { return(
-                                                    coords[ind] = new Array(),
-                                                    coords[ind].push
-                                                        (
-                                                            value.BoundingBox.Left * this.imageWidth,
-                                                            value.BoundingBox.Top * this.imageHeight,
-                                                            value.BoundingBox.Width * this.imageWidth,
-                                                            value.BoundingBox.Height * this.imageHeight
-                                                        ), 
-                                                    
-                                                    this.confidence = value.Confidence,
-                                                    
-                                                    (
-                                                                                                      
-                                                    <BoundingBox 
-                                                    image={params.image}
-                                                    boxes={params.boxes} 
-                                                    options={params.options}
-                                                    />
-                                                        
-                                                    )
-                                            )}
-                                                
-                                            ))
-                                        }
-                                    )}
+                                       
+
+                                        }console.log(JSON.stringify(coordobj));
+                                        console.log(boxcoord);
+                                        return (<BoundingBox 
+                                            image={params.image}
+                                            boxes={ boxcoord }
+                                            options={params.options}
+                                            />)
+                                        
+                                     } )}
+                                    {/* boxes={[{"coord" : [53, 100,264, 180]}] } 
+                                    [{"coord" : [53, 100,264, 180]}, 
+                                        {"coord" : [87, 200,287, 200]}]
+                                    [{"coord":[111, 17, 234, 118]}]
+                                    {"coord":[111.74893379211426,17.354606464505196,234.41131114959717,118.38980913162231]}
+                                    */}
+                                   {/*  {()=> this.FnShowBounding()} */}
 
                                     {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
