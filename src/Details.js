@@ -272,6 +272,7 @@ class LayoutSection extends React.Component {
         }
         const params = {
             image : `data:image/png;base64,${this.state.image}`,
+            boxcoord:[],
           // image: this.state.image,
             boxes: [
                 // coord(0,0) = top left corner of image
@@ -404,24 +405,24 @@ class LayoutSection extends React.Component {
                                     {console.log("before fn console"),
                                     console.log(this.FnShowBounding()),
                                     this.FnShowBounding().map((currentVal, coordindex) => {
-                                        var boxcoord = [];
                                         for ( var i =0; i < currentVal.length ; i++){
                                             console.log(currentVal[i]);
                                         
                                        var coordobj =  {coord : currentVal[i]}
-                                        boxcoord.push(coordobj)
-                                    
-                                       
+                                        params.boxcoord.push(coordobj)
 
                                         }console.log(JSON.stringify(coordobj));
-                                        console.log(boxcoord);
-                                        return (<BoundingBox 
-                                            image={params.image}
-                                            boxes={ boxcoord }
-                                            options={params.options}
-                                            />)
+                                        console.log(params.boxcoord);
                                         
                                      } )}
+
+                                     <BoundingBox 
+                                            image={params.image}
+                                            boxes={ params.boxcoord }
+                                            options={params.options}
+                                            />
+                                     
+                                    
                                     {/* boxes={[{"coord" : [53, 100,264, 180]}] } 
                                     [{"coord" : [53, 100,264, 180]}, 
                                         {"coord" : [87, 200,287, 200]}]
