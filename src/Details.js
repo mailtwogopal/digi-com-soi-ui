@@ -230,33 +230,35 @@ class LayoutSection extends React.Component {
         sendData();
     }
 
-    FnShowBounding(){
+    FnShowBounding() {
         return (
-        this.result.map(
-            (val, index) => {
-                //console.log("name is " + val.Name);
-                var coords = [];
-                
-                val.Instances.map(
-                    (value, ind) => { 
-                        this.confidence = value.Confidence;
-                        coords[ind] = new Array();
-                        coords[ind].push
-                            (
-                                value.BoundingBox.Left * this.imageWidth,
-                                value.BoundingBox.Top * this.imageHeight,
-                                value.BoundingBox.Width * this.imageWidth,
-                                value.BoundingBox.Height * this.imageHeight
-                            ); 
-                                
-                         //,
-                       // console.log(coords[ind])
+            this.result.map(
+                (val, index) => {
+                    var coords = [];
+                    var labels = [];
+                    var labelName = val.Name;
+                    val.Instances.map(
+                        (value, ind) => {
+                            this.confidence = Math.floor(value.Confidence);
+                            coords[ind] = new Array();
+                            coords[ind].push
+                                (
+                                    value.BoundingBox.Left * this.imageWidth,
+                                    value.BoundingBox.Top * this.imageHeight,
+                                    value.BoundingBox.Width * this.imageWidth,
+                                    value.BoundingBox.Height * this.imageHeight
+                                );
+                            labels.push({
+                                "coord": coords[ind],
+                                "label": labelName + " - " + this.confidence + "%"
+                            })
+                            //,
+                            // console.log(coords[ind])
+                        }
+                    )//end of inner map
+                    return labels;
                 }
-                    
-                )//end of inner map
-                return coords;
-            }
-        )//end of outer
+            )//end of outer
         )
     }
 
@@ -271,9 +273,9 @@ class LayoutSection extends React.Component {
             }
         }
         const params = {
-            image : `data:image/png;base64,${this.state.image}`,
-            boxcoord:[],
-          // image: this.state.image,
+            image: `data:image/png;base64,${this.state.image}`,
+            boxcoord: [],
+            // image: this.state.image,
             boxes: [
                 // coord(0,0) = top left corner of image
                 //[x, y, width, height]
@@ -289,17 +291,21 @@ class LayoutSection extends React.Component {
             ],
             options: {
                 colors: {
-                    normal: 'rgba(255,225,255,1)',
+                    normal: 'rgba(255,225,255,1)', //rgba(255,225,255,1)
                     selected: 'rgba(0,225,204,1)',
                     unselected: 'rgba(100,100,100,1)'
                 },
-                showLabels: true
+                style: {
+                    maxWidth: '90%',
+                    maxHeight: '90vh'
+                }
+                //,showLabels: false
             }
         }
         return (
-            
+
             <div className="container-main">
-                
+
                 <form className="container" onSubmit={this.calcLayoutSection}>
 
                     <div><h4 className="card-title">{this.state.formtitle}</h4></div>
@@ -395,43 +401,43 @@ class LayoutSection extends React.Component {
                         <p></p>}
 
                     {this.state.loading === 2 ?
-                        <div className="row">
-                            <div className="result-table">
-                                <div>
-                                    {/* <img className="scannedImage" alt="imagemissing" id="uplimg" 
+                        <div>
+
+                            {
+                                this.FnShowBounding().map((currentVal, coordindex) => {
+                                    for (var i = 0; i < currentVal.length; i++) {
+                                        console.log(JSON.stringify(currentVal[i]));
+
+                                        var coordobj = currentVal[i]
+                                        params.boxcoord.push(coordobj)
+
+                                    } console.log(JSON.stringify(coordobj));
+                                    console.log(params.boxcoord);
+
+                                })}
+
+                            <BoundingBox
+                                image={params.image}
+                                boxes={params.boxcoord}
+                                options={params.options}
+                            />
+
+                            <div className="row">
+                                <div className="result-table">
+                                    <div>
+                                        {/* <img className="scannedImage" alt="imagemissing" id="uplimg" 
                                     src={`data:image/png;base64,${this.state.image}`} 
                                       onClick={()=> {this.imageClick()}}
                                     /> */}
-                                    {console.log("before fn console"),
-                                    console.log(this.FnShowBounding()),
-                                    this.FnShowBounding().map((currentVal, coordindex) => {
-                                        for ( var i =0; i < currentVal.length ; i++){
-                                            console.log(currentVal[i]);
-                                        
-                                       var coordobj =  {coord : currentVal[i]}
-                                        params.boxcoord.push(coordobj)
-
-                                        }console.log(JSON.stringify(coordobj));
-                                        console.log(params.boxcoord);
-                                        
-                                     } )}
-
-                                     <BoundingBox 
-                                            image={params.image}
-                                            boxes={ params.boxcoord }
-                                            options={params.options}
-                                            />
-                                     
-                                    
-                                    {/* boxes={[{"coord" : [53, 100,264, 180]}] } 
+                                        {/* boxes={[{"coord" : [53, 100,264, 180]}] } 
                                     [{"coord" : [53, 100,264, 180]}, 
                                         {"coord" : [87, 200,287, 200]}]
                                     [{"coord":[111, 17, 234, 118]}]
                                     {"coord":[111.74893379211426,17.354606464505196,234.41131114959717,118.38980913162231]}
                                     */}
-                                   {/*  {()=> this.FnShowBounding()} */}
+                                        {/*  {()=> this.FnShowBounding()} */}
 
-                                    {/* <ol>
+                                        {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
                                             {this.state.objectsList.Labels.map((lst, index) => {
                                                 return (<li key={index}>
@@ -440,26 +446,27 @@ class LayoutSection extends React.Component {
                                                 )   
                                             })}
                                         </ol> */}
-                                    <Table className="table_sec" responsive striped bordered hover size="sm">
-                                        <thead>
-                                            <tr><th>#</th>
-                                                <th>Identified Object</th>
-                                                <th>Accuracy Level</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {this.state.objectsList.Labels.map((lst, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td className="align-center">{index + 1}</td>
-                                                        <td>{lst.Name}</td>
-                                                        <td className="align-center">{Math.round(lst.Confidence) + "%"}</td>
-                                                    </tr>
-                                                );
-                                            }
-                                            )}
-                                        </tbody>
-                                    </Table>
+                                        <Table className="table_sec" responsive striped bordered hover size="sm">
+                                            <thead>
+                                                <tr><th>#</th>
+                                                    <th>Identified Object</th>
+                                                    <th>Accuracy Level</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.objectsList.Labels.map((lst, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className="align-center">{index + 1}</td>
+                                                            <td>{lst.Name}</td>
+                                                            <td className="align-center">{Math.round(lst.Confidence) + "%"}</td>
+                                                        </tr>
+                                                    );
+                                                }
+                                                )}
+                                            </tbody>
+                                        </Table>
+                                    </div>
                                 </div>
                             </div>
                         </div> :
