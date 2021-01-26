@@ -12,12 +12,22 @@ import loadingIcon from './assets/loading.gif';
 import BoundingBox from 'react-bounding-box';
 
 class LayoutSection extends React.Component {
+
     constructor(props) {
         super(props);
+        this.imageWidth = 0;
+        this.imageHeight = 0;
+        this.boxLeft = 0;
+        this.boxTop = 0;
+        this.objectWidth = 0;
+        this.objectHeight = 0;
+        this.confidence = 0;
+        this.result = [];
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
         this.callApi = this.callApi.bind(this);
         this.callbackFunction = this.callbackFunction.bind(this);
+        this.imageClick = this.imageClick.bind(this);
         this.state = {
             userName: "",
             userEmail: "",
@@ -36,6 +46,7 @@ class LayoutSection extends React.Component {
         this.showConsentButton = true;
         this.srcimage = "";
     }
+
 
     callbackFunction = (fromModal) => {
         if (fromModal !== "") {
@@ -101,6 +112,14 @@ class LayoutSection extends React.Component {
         getSubscription();
     }
 
+    imageClick() {
+        var imgRef;
+        imgRef = document.getElementById("uploadImage");
+        this.imageWidth = imgRef.naturalWidth;
+        this.imageHeight = imgRef.naturalHeight;
+        console.log("width : " + this.imageWidth + " " + "height is " + this.imageHeight);
+    }
+
     calcLayoutSection(e) {
         e.preventDefault();
         const name = (e.target.elements.name.value.trim());
@@ -117,6 +136,7 @@ class LayoutSection extends React.Component {
         }
 
         const getLabels = async () => {
+
             const apiResp = await this.callApi(reqBody, reqHeader);
             let emailbodyobj = {};
             emailbodyobj = apiResp;
@@ -126,26 +146,32 @@ class LayoutSection extends React.Component {
             })
             //let instanceArray = {};
             let forInstanceBounding = apiResp;
-            let result = forInstanceBounding.Labels.filter(
-                (val, index, instanceArray) => 
-                //{
+            this.result = forInstanceBounding.Labels.filter(
+                (val, index, instanceArray) =>
+                    //{
                     val.Instances.length > 0
-                   // return true
+                // return true
                 //}
             )
-            result.map(
+            /* this.result.map(
                 (val, index) => {
                     console.log("name is " + val.Name);
                     console.log("confidence is " + val.Confidence);
-                    console.log(val.Instances);   
+                    console.log(val.Instances);
                     val.Instances.map(
-                        (value, index) => {
-                        console.log(value.BoundingBox.Width);
+                        (value, ind) => {
+                            this.boxLeft = value.BoundingBox.Left * this.imageWidth;
+                            this.boxTop = value.BoundingBox.Left * this.imageHeight;
+                            this.objectWidth = value.BoundingBox.Width * this.imageWidth;
+                            this.objectHeight = value.BoundingBox.Height * this.imageHeight;
+                            this.confidence = value.Confidence;
+                            console.log("box left : " + this.boxLeft);
+                            console.log("bounding conf " + this.confidence);
                         }
-                    )                 
+                    )
                 }
-            )
-            console.log(result);
+            ) */
+            // console.log(this.result);
             this.setState(() => ({ objectsList: apiResp, loading: 2, inputsection: 'hide-section', formtitle: "Scan Result" }));
         }
         getLabels();
@@ -205,6 +231,7 @@ class LayoutSection extends React.Component {
 
     render() {
         console.log("webClass Render");
+        console.log("boxleft insid render " + this.result);
         let addModalClose = () => {
             this.setState({ addModalShow: false })
             if (this.state.loading === 3) {
@@ -213,7 +240,8 @@ class LayoutSection extends React.Component {
             }
         }
         const params = {
-            image: `data:image/png;base64,${this.state.image}`,
+            image : `data:image/png;base64,${this.state.image}`,
+          // image: this.state.image,
             boxes: [
                 // coord(0,0) = top left corner of image
                 //[x, y, width, height]
@@ -221,10 +249,11 @@ class LayoutSection extends React.Component {
                 //[300, 0, 250, 250],
                 //[700, 0, 300, 25],
                 //[1100, 0, 250, 300]
-                { coord: [0, 0, 250, 250], label: "test" },
-                { coord: [300, 0, 250, 250], label: "A" },
-                { coord: [700, 0, 300, 25], label: "B" },
-                { coord: [1100, 0, 25, 300], label: "C" }
+
+                { coord: [53, 100, 234, 180], label: "car1 - 98%" },
+                { coord: [112, 18, 234, 118], label: "car2" },
+                /*  { coord: [700, 0, 300, 25], label: "B" },
+                { coord: [1100, 0, 25, 300], label: "C" } */
             ],
             options: {
                 colors: {
@@ -295,7 +324,14 @@ class LayoutSection extends React.Component {
                                         accept='image/*'
                                         onChange={(e) => this.onChange(e)}
                                     />
-                                    <img src={(this.state.image).substr(-4) === ".svg" ? this.state.image : `data:image/png;base64,${this.state.image}`} width="50px" alt="addimage" />
+                                    <img
+                                        src={(this.state.image).substr(-4) === ".svg"
+                                            ?
+                                            this.state.image : `data:image/png;base64,${this.state.image}`}
+                                        width="50px"
+                                        alt="addimage"
+                                        id="uploadImage"
+                                    />
 
                                 </label>
 
@@ -310,6 +346,7 @@ class LayoutSection extends React.Component {
                                 disabled={((this.state.image).substr(-4) === ".svg") ? true : false}
                                 type="submit"
                                 className="hideProp button_width"
+                                onClick={() => { this.imageClick() }}
                             >
                                 Scan Image
                                     </Button>
@@ -327,8 +364,45 @@ class LayoutSection extends React.Component {
                         <div className="row">
                             <div className="result-table">
                                 <div>
-                                    {/* <img className="scannedImage" alt="imagemissing" src={} /> */}
-                                    <BoundingBox image={params.image} boxes={params.boxes} options={params.options.normal} />
+                                    {/* <img className="scannedImage" alt="imagemissing" id="uplimg" 
+                                    src={`data:image/png;base64,${this.state.image}`} 
+                                      onClick={()=> {this.imageClick()}}
+                                    /> */}
+                                    
+                                    {this.result.map(
+                                        (val, index) => {
+                                            console.log("name is " + val.Name);
+                                            console.log("confidence is " + val.Confidence);
+                                            var coords = [];
+                                            return (
+                                            val.Instances.map(
+                                                (value, ind) => { return(
+                                                    coords[ind] = new Array(),
+                                                    coords[ind].push
+                                                        (
+                                                            value.BoundingBox.Left * this.imageWidth,
+                                                            value.BoundingBox.Top * this.imageHeight,
+                                                            value.BoundingBox.Width * this.imageWidth,
+                                                            value.BoundingBox.Height * this.imageHeight
+                                                        ), 
+                                                    
+                                                    this.confidence = value.Confidence,
+                                                    
+                                                    (
+                                                                                                      
+                                                    <BoundingBox 
+                                                    image={params.image}
+                                                    boxes={params.boxes} 
+                                                    options={params.options}
+                                                    />
+                                                        
+                                                    )
+                                            )}
+                                                
+                                            ))
+                                        }
+                                    )}
+
                                     {/* <ol>
                                             <label>Objects identified for the uploaded picture:</label>
                                             {this.state.objectsList.Labels.map((lst, index) => {
