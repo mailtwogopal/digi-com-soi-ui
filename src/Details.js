@@ -23,6 +23,7 @@ class LayoutSection extends React.Component {
         this.objectHeight = 0;
         this.confidence = 0;
         this.result = [];
+        this.filer = [];
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.FnShowBounding = this.FnShowBounding.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
@@ -459,7 +460,7 @@ class LayoutSection extends React.Component {
                                                         <tr key={index}>
                                                             <td className="align-center">{index + 1}</td>
                                                             <td>{lst.Name}</td>
-                                                            <td className="align-center">{Math.round(lst.Confidence) + "%"}</td>
+                                                            <td className="align-center">{Math.floor(lst.Confidence) + "%"}</td>
                                                         </tr>
                                                     );
                                                 }
