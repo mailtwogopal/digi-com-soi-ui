@@ -23,7 +23,7 @@ class LayoutSection extends React.Component {
         this.objectHeight = 0;
         this.confidence = 0;
         this.result = [];
-        this.filer = [];
+        this.filter = [];
         this.calcLayoutSection = this.calcLayoutSection.bind(this);
         this.FnShowBounding = this.FnShowBounding.bind(this);
         this.sendFormData = this.sendFormData.bind(this);
@@ -155,6 +155,13 @@ class LayoutSection extends React.Component {
                 // return true
                 //}
             )
+            this.filter = forInstanceBounding.Labels.filter(
+                (val, index, instanceArray) =>
+                    //{
+                    val.Instances.length === 0
+                // return true
+                //}
+            )
             /* this.result.map(
                 (val, index) => {
                     console.log("name is " + val.Name);
@@ -262,7 +269,7 @@ class LayoutSection extends React.Component {
             )//end of outer
         )
     }
-
+    
     render() {
         console.log("webClass Render");
         console.log("boxleft insid render " + this.result);
@@ -430,23 +437,6 @@ class LayoutSection extends React.Component {
                                     src={`data:image/png;base64,${this.state.image}`} 
                                       onClick={()=> {this.imageClick()}}
                                     /> */}
-                                        {/* boxes={[{"coord" : [53, 100,264, 180]}] } 
-                                    [{"coord" : [53, 100,264, 180]}, 
-                                        {"coord" : [87, 200,287, 200]}]
-                                    [{"coord":[111, 17, 234, 118]}]
-                                    {"coord":[111.74893379211426,17.354606464505196,234.41131114959717,118.38980913162231]}
-                                    */}
-                                        {/*  {()=> this.FnShowBounding()} */}
-
-                                        {/* <ol>
-                                            <label>Objects identified for the uploaded picture:</label>
-                                            {this.state.objectsList.Labels.map((lst, index) => {
-                                                return (<li key={index}>
-                                                    <p>{lst.Name}</p>
-                                                </li>
-                                                )   
-                                            })}
-                                        </ol> */}
                                         <Table className="table_sec" responsive striped bordered hover size="sm">
                                             <thead>
                                                 <tr><th>#</th>
@@ -455,7 +445,7 @@ class LayoutSection extends React.Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.objectsList.Labels.map((lst, index) => {
+                                                {/* {this.state.objectsList.Labels.map((lst, index) => {
                                                     return (
                                                         <tr key={index}>
                                                             <td className="align-center">{index + 1}</td>
@@ -464,6 +454,26 @@ class LayoutSection extends React.Component {
                                                         </tr>
                                                     );
                                                 }
+                                                )} */}
+                                                {this.result.map((lst, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className="align-center">{index + 1}</td>
+                                                            <td>{lst.Name}</td>
+                                                            <td className="align-center">{Math.floor(lst.Confidence) + "%"}</td>
+                                                        </tr>
+                                                    );
+                                                    }
+                                                )}
+                                                {this.filter.map((lst, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className="align-center">{index + this.result.length + 1}</td>
+                                                            <td>{lst.Name + " - Category"}</td>
+                                                            <td className="align-center">{Math.floor(lst.Confidence) + "%"}</td>
+                                                        </tr>
+                                                    );
+                                                    }
                                                 )}
                                             </tbody>
                                         </Table>
