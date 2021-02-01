@@ -23,7 +23,7 @@ class LayoutClass extends Component{
         return(
             <div>
                 <div className="banner">
-                    <h1 className="banner-text">SMART EYE</h1>
+                    <h1 className="banner-text">SMART EYE My Repo</h1>
                 </div>
                 <LayoutSection />
                 {/*    {this.state.likeCount > 100 ? <p> Reached 100 Likes </p>:''}
